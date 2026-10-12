@@ -13,6 +13,7 @@ import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as process from "../process.js";
 import type * as sandboxes from "../sandboxes.js";
+import type * as transport from "../transport.js";
 import type * as types from "../types.js";
 import type * as webhooks from "../webhooks.js";
 import type { ApiFromModules } from "bijection/server";
@@ -55,6 +56,7 @@ export const api: {
     };
     "process": {
         "cancelExecution": FunctionReferenceFor<typeof process, "cancelExecution">;
+        "retryCleanup": FunctionReferenceFor<typeof process, "retryCleanup">;
         "run": FunctionReferenceFor<typeof process, "run">;
         "runBackground": FunctionReferenceFor<typeof process, "runBackground">;
         "runCode": FunctionReferenceFor<typeof process, "runCode">;
@@ -84,6 +86,7 @@ export const internal: {
     "executions": {
         "finishExecution": FunctionReferenceFor<typeof executions, "finishExecution">;
         "getInternal": FunctionReferenceFor<typeof executions, "getInternal">;
+        "recordCleanup": FunctionReferenceFor<typeof executions, "recordCleanup">;
         "startExecution": FunctionReferenceFor<typeof executions, "startExecution">;
         "updateExecution": FunctionReferenceFor<typeof executions, "updateExecution">;
     };

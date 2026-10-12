@@ -60,6 +60,22 @@ export const executionFields = {
   /** Caller-supplied value passed through to the onComplete handler. */
   onCompleteContext: v.optional(v.any()),
   error: v.optional(v.string()),
+  // concave:begin provider-outcome-fields
+  // why: Keep uncertain remote work visible without changing inherited execution status values.
+  // preserves: packages/convex/src/component/executions.ts#execution-custody
+  // witness: packages/convex/src/component/custody.test.ts
+  // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+  /** Provider evidence, separate from the inherited local action status. */
+  outcome: v.optional(
+    v.union(
+      v.literal("not_dispatched"),
+      v.literal("unconfirmed"),
+      v.literal("exited"),
+    ),
+  ),
+  /** A delete acknowledgement is not proof of sandbox or child-process deletion. */
+  cleanup: v.optional(v.union(v.literal("pending"), v.literal("acknowledged"))),
+  // concave:end provider-outcome-fields
   startedAt: v.number(),
   finishedAt: v.optional(v.number()),
 };

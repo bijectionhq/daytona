@@ -266,6 +266,20 @@ export class Daytona {
     });
   }
 
+  // concave:begin cleanup-retry-client
+  // why: A retained cleanup obligation needs an ordinary host entry without resending the command.
+  // preserves: packages/convex/src/component/executions.ts#execution-custody
+  // witness: packages/convex/src/component/custody.test.ts
+  // remove-when: Upstream exposes session cleanup recovery.
+  /** Retry terminal session cleanup; this never executes a command. */
+  async retryCleanup(ctx: RunActionCtx, args: { executionId: string }) {
+    return await ctx.runAction(this.component.process.retryCleanup, {
+      executionId: args.executionId as never,
+      apiUrl: this.apiUrl,
+    });
+  }
+  // concave:end cleanup-retry-client
+
   /**
    * Cancel a running background execution: stops the command (kills its
    * session), marks the row "cancelled", and fires its onComplete handler.

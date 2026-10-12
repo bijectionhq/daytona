@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "provider-outcome-fields",
+      "path": "packages/convex/src/component/schema.ts",
+      "upstream_sha256": "a3eb85f8d6774991562fe8447d1fcf478ec70cd9a607f7fdb394267e35a64623",
+      "start": 62,
+      "end": 62,
+      "replacement_sha256": "bd5fbb2a079a3efabd1e19530391b4af3adae04043ea89e5ca283d4d5dce4a0a",
+      "fence": true
+    }
+  ]
+}

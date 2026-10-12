@@ -1,0 +1,50 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "provider-cleanup-record",
+      "path": "packages/convex/src/component/executions.ts",
+      "upstream_sha256": "dd529cb9a3c7c81b042fbf5169a61a69ccbeae74d467cc1f03af29e14278cc67",
+      "start": 153,
+      "end": 153,
+      "replacement_sha256": "8da4fc9d1287f22c6e2daa2d6c0ea970c9d62c46dc91d5806f5f5bcb6ee44eb2",
+      "fence": true
+    },
+    {
+      "id": "provider-dispatch-custody",
+      "path": "packages/convex/src/component/executions.ts",
+      "upstream_sha256": "dd529cb9a3c7c81b042fbf5169a61a69ccbeae74d467cc1f03af29e14278cc67",
+      "start": 54,
+      "end": 71,
+      "replacement_sha256": "4d7f6609768fe8d09fe5389abb704ede8756cf53234ec38da3de5398cff3236b",
+      "fence": true
+    },
+    {
+      "id": "provider-exit-custody",
+      "path": "packages/convex/src/component/executions.ts",
+      "upstream_sha256": "dd529cb9a3c7c81b042fbf5169a61a69ccbeae74d467cc1f03af29e14278cc67",
+      "start": 99,
+      "end": 99,
+      "replacement_sha256": "ec9f7d22d2af48cc35edbc2c9f934477255b100039eb8589da8d81105763a0f4",
+      "fence": true
+    },
+    {
+      "id": "provider-initial-custody",
+      "path": "packages/convex/src/component/executions.ts",
+      "upstream_sha256": "dd529cb9a3c7c81b042fbf5169a61a69ccbeae74d467cc1f03af29e14278cc67",
+      "start": 85,
+      "end": 85,
+      "replacement_sha256": "404fdf09fae341f5556d8afb5af379428052819a6b778615acdf589041fb31d9",
+      "fence": true
+    },
+    {
+      "id": "unresolved-execution-retention",
+      "path": "packages/convex/src/component/executions.ts",
+      "upstream_sha256": "dd529cb9a3c7c81b042fbf5169a61a69ccbeae74d467cc1f03af29e14278cc67",
+      "start": 143,
+      "end": 143,
+      "replacement_sha256": "b1e96660601e609c9d35ce110f7735919901148c151e3d004375054c83313fba",
+      "fence": true
+    }
+  ]
+}

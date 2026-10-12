@@ -26,6 +26,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         }, null | {
             _creationTime: number;
             _id: string;
+            cleanup?: "pending" | "acknowledged";
             commandId?: string;
             cwd?: string;
             error?: string;
@@ -35,6 +36,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             kind: "command" | "code";
             onComplete?: string;
             onCompleteContext?: any;
+            outcome?: "not_dispatched" | "unconfirmed" | "exited";
             result?: string;
             sandboxId: string;
             sessionId?: string;
@@ -47,6 +49,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         }, Array<{
             _creationTime: number;
             _id: string;
+            cleanup?: "pending" | "acknowledged";
             commandId?: string;
             cwd?: string;
             error?: string;
@@ -56,6 +59,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             kind: "command" | "code";
             onComplete?: string;
             onCompleteContext?: any;
+            outcome?: "not_dispatched" | "unconfirmed" | "exited";
             result?: string;
             sandboxId: string;
             sessionId?: string;
@@ -133,6 +137,12 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             apiUrl?: string;
             executionId: string;
         }, null, Name>;
+        "retryCleanup": FunctionReference<"action", "internal", {
+            apiUrl?: string;
+            executionId: string;
+        }, {
+            cleanup: "pending" | "acknowledged";
+        }, Name>;
         "run": FunctionReference<"action", "internal", {
             autoStart?: boolean;
             command: string;

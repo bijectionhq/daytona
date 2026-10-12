@@ -1,0 +1,41 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "bounded-provider-import",
+      "path": "packages/convex/src/component/daytona.ts",
+      "upstream_sha256": "a906241a0093342ed5b14c5ec40fd18ee3dbb0171c1bd089327a965188cc8b3b",
+      "start": 16,
+      "end": 16,
+      "replacement_sha256": "41240926be57f1472574ecf50a2e0d60eda5028b38bc92ac369859d8118afbe0",
+      "fence": true
+    },
+    {
+      "id": "bounded-provider-transport",
+      "path": "packages/convex/src/component/daytona.ts",
+      "upstream_sha256": "a906241a0093342ed5b14c5ec40fd18ee3dbb0171c1bd089327a965188cc8b3b",
+      "start": 82,
+      "end": 100,
+      "replacement_sha256": "63ebb1fefb5f4de079a813c87833f4d971b80e5b86f745accbf447885ecefd5c",
+      "fence": true
+    },
+    {
+      "id": "confirmed-code-exit",
+      "path": "packages/convex/src/component/daytona.ts",
+      "upstream_sha256": "a906241a0093342ed5b14c5ec40fd18ee3dbb0171c1bd089327a965188cc8b3b",
+      "start": 264,
+      "end": 265,
+      "replacement_sha256": "dbbcadf3e689e5dc6f9d1a46cace964879e92ccc04bad6ce6c94630d894af8a1",
+      "fence": true
+    },
+    {
+      "id": "confirmed-command-exit",
+      "path": "packages/convex/src/component/daytona.ts",
+      "upstream_sha256": "a906241a0093342ed5b14c5ec40fd18ee3dbb0171c1bd089327a965188cc8b3b",
+      "start": 239,
+      "end": 240,
+      "replacement_sha256": "dbbcadf3e689e5dc6f9d1a46cace964879e92ccc04bad6ce6c94630d894af8a1",
+      "fence": true
+    }
+  ]
+}

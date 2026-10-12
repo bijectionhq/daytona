@@ -1,0 +1,104 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "acknowledged-command-cancellation",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 562,
+      "end": 565,
+      "replacement_sha256": "5a88feef23871a5c708f906e394612bb0eb77770f913a124a1b9bdd70c0452f0",
+      "fence": true
+    },
+    {
+      "id": "background-cleanup-custody",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 373,
+      "end": 380,
+      "replacement_sha256": "5dc81b1c7c97b0095db52cdfd2c09fb910a599f5cea3d21a3be6c354254fc5c0",
+      "fence": true
+    },
+    {
+      "id": "background-command-admission",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 353,
+      "end": 359,
+      "replacement_sha256": "5c71f7dde55ceb3fe19f69c249fd00afc34ff8888bdc71ed15a7816beeed76c9",
+      "fence": true
+    },
+    {
+      "id": "background-command-exit",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 464,
+      "end": 464,
+      "replacement_sha256": "cf1affa4170ecd3353164bd5e8a51802951e0b0fcffaa66adbd3b538324b3516",
+      "fence": true
+    },
+    {
+      "id": "cancelled-session-custody",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 574,
+      "end": 574,
+      "replacement_sha256": "f72985afd431486ef487db8701a0abc740723da8f5e05cf013871a9f81a9f5c4",
+      "fence": true
+    },
+    {
+      "id": "command-dispatch-custody",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 91,
+      "end": 91,
+      "replacement_sha256": "195819548ccef3ab7390664296588ae7f53c4c9254c66f865799ef81cd59c5cb",
+      "fence": true
+    },
+    {
+      "id": "command-exit-custody",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 96,
+      "end": 96,
+      "replacement_sha256": "63212be32f7d3b67c3abf58849d4d1620931d23b112d421c1fd98923a1c195e2",
+      "fence": true
+    },
+    {
+      "id": "command-exit-value",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 101,
+      "end": 102,
+      "replacement_sha256": "56e54f4463130bb7aaacb055482a43bcfdf939e4db68c67cd34e4da7f1dc5413",
+      "fence": true
+    },
+    {
+      "id": "completed-session-cleanup",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 468,
+      "end": 471,
+      "replacement_sha256": "5ac256b54e18c39910e83b958b0641da384a7d0ee6fd4f9eb6726ddcdc797a97",
+      "fence": true
+    },
+    {
+      "id": "provider-cleanup-owner",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 590,
+      "end": 590,
+      "replacement_sha256": "1c467eadc8f4c66bd2d9e33bc85453aefb1ff42abe9e2bf64abfa0becb5e358f",
+      "fence": true
+    },
+    {
+      "id": "unconfirmed-session-cleanup",
+      "path": "packages/convex/src/component/process.ts",
+      "upstream_sha256": "a7fd12c3ec4cdfc8f8014b0b434622faf8455670fbdffd89040de0a41fc15cce",
+      "start": 501,
+      "end": 506,
+      "replacement_sha256": "5ac256b54e18c39910e83b958b0641da384a7d0ee6fd4f9eb6726ddcdc797a97",
+      "fence": true
+    }
+  ]
+}

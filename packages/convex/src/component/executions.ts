@@ -52,10 +52,19 @@ export const getInternal = internalQuery({
   },
 });
 
+// concave:begin provider-dispatch-custody
+// why: Retain possible command delivery separately from inherited action status, with its obligation on the actual record owner.
+// preserves: packages/convex/src/component/executions.ts#execution-custody
+// witness: packages/convex/src/component/custody.test.ts
+// remove-when: Upstream retains provider outcome evidence separately from local action status.
+// concave:invariant execution-custody
+// Retain possible command delivery before transmission and actual exit evidence
+// independently of local action status. Cleanup acknowledgement never proves exit.
 export const updateExecution = internalMutation({
   args: {
     executionId: v.id("executions"),
     sessionId: v.optional(v.string()),
+    outcome: v.optional(v.literal("unconfirmed")),
     commandId: v.optional(v.string()),
     result: v.optional(v.string()),
   },
@@ -69,6 +78,7 @@ export const updateExecution = internalMutation({
     return null;
   },
 });
+// concave:end provider-dispatch-custody
 
 export const startExecution = internalMutation({
   args: {
@@ -83,6 +93,13 @@ export const startExecution = internalMutation({
   handler: async (ctx, args) => {
     return await ctx.db.insert("executions", {
       ...args,
+      // concave:begin provider-initial-custody
+      // why: A new execution has no transmitted command until dispatch custody commits.
+      // preserves: packages/convex/src/component/executions.ts#execution-custody
+      // witness: packages/convex/src/component/custody.test.ts
+      // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+      outcome: "not_dispatched",
+      // concave:end provider-initial-custody
       status: "running",
       startedAt: Date.now(),
     });
@@ -97,6 +114,13 @@ export const finishExecution = internalMutation({
       v.literal("failed"),
       v.literal("cancelled"),
     ),
+    // concave:begin provider-exit-custody
+    // why: Only a validated provider exit response can settle the command outcome.
+    // preserves: packages/convex/src/component/executions.ts#execution-custody
+    // witness: packages/convex/src/component/custody.test.ts
+    // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+    outcome: v.optional(v.literal("exited")),
+    // concave:end provider-exit-custody
     exitCode: v.optional(v.number()),
     result: v.optional(v.string()),
     error: v.optional(v.string()),
@@ -141,6 +165,14 @@ export const purge = mutation({
       .filter((q) =>
         q.and(
           q.neq(q.field("status"), "running"),
+          // concave:begin unresolved-execution-retention
+          // why: Deleting an unconfirmed outcome or pending cleanup would erase the only retained remote-work evidence.
+          // preserves: packages/convex/src/component/executions.ts#execution-custody
+          // witness: packages/convex/src/component/custody.test.ts
+          // remove-when: Upstream purge retains unresolved remote outcomes and cleanup obligations.
+          q.neq(q.field("outcome"), "unconfirmed"),
+          q.neq(q.field("cleanup"), "pending"),
+          // concave:end unresolved-execution-retention
           q.lte(q.field("startedAt"), cutoff),
         ),
       )
@@ -151,3 +183,24 @@ export const purge = mutation({
     return { deleted: victims.length, hasMore: victims.length === 200 };
   },
 });
+
+// concave:begin provider-cleanup-record
+// why: Cleanup acknowledgement is monotone and does not overwrite a terminal action or uncertain command outcome.
+// preserves: packages/convex/src/component/executions.ts#execution-custody
+// witness: packages/convex/src/component/custody.test.ts
+// remove-when: Upstream keeps cleanup evidence separately from action status.
+/** Cleanup evidence can settle after the action, without overwriting its outcome. */
+export const recordCleanup = internalMutation({
+  args: {
+    executionId: v.id("executions"),
+    cleanup: v.union(v.literal("pending"), v.literal("acknowledged")),
+  },
+  returns: v.null(),
+  handler: async (ctx, { executionId, cleanup }) => {
+    const execution = await ctx.db.get(executionId);
+    if (!execution || execution.cleanup === "acknowledged") return null;
+    await ctx.db.patch(executionId, { cleanup });
+    return null;
+  },
+});
+// concave:end provider-cleanup-record

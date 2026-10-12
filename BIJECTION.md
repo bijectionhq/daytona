@@ -20,3 +20,32 @@ ordinary merge commits, followed by inspection and narrowly justified repairs.
 Original examples and documentation are retained for comparison; they do not
 advertise Bijection's native authority, billing, or recovery guarantees.
 GitHub Actions are disabled. Verification is explicit and local.
+
+## Provider execution evidence
+
+An execution has three independent facts. The inherited `status` records local
+supervision (`running`, `completed`, `failed`, `cancelled`). `outcome` records
+provider command evidence (`not_dispatched`, `unconfirmed`, `exited`); an `exited`
+command retains the provider's actual exit code. `cleanup` records a pending
+session deletion or its acknowledgement. A delete acknowledgement establishes
+neither command exit nor complete sandbox/child-process teardown.
+
+The component records possible command delivery before transmission and the
+stable background session before creation. Lost replies, invalid completions,
+and failed supervision retain uncertainty. Never retry a command because its
+action failed. `daytona.retryCleanup(ctx, { executionId })` retries only a retained
+terminal session deletion; it never dispatches code. Purge retains uncertain
+outcomes and pending cleanup. Host applications still enforce authorization.
+These records are component bookkeeping, not native agent admission, protected
+output custody or an external-call receipt.
+
+Every HTTP request and its body share a 60 second deadline. Actual response
+bytes are limited to 8 MiB before JSON/text/binary decoding; error details are
+limited to 2,000 bytes. Oversize and deadline refusals preserve command
+uncertainty. No missing exit code becomes a successful zero.
+
+Run `BIJECTION_PLATFORM_ROOT=/path/to/bijection python3 scripts/check_daytona_custody.py`
+for the fork's source-bound TypeScript and single-worker component checks.
+The check uses the platform's pinned Node and installed SDK graph; it is a
+mocked-provider/component witness, not PostgreSQL crash recovery or live Daytona
+qualification. Native agents keep the platform's durable run and authority owner.

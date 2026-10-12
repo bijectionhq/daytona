@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "cleanup-retry-client",
+      "path": "packages/convex/src/client/index.ts",
+      "upstream_sha256": "f68ffdcf6259950b5fb0e509c19c031e2203b0998026e538805f1c8d0284d523",
+      "start": 268,
+      "end": 268,
+      "replacement_sha256": "f1d278e42e7749471b97d46acbbb6563bc47d3478968ce5c612887961ed8fad7",
+      "fence": true
+    }
+  ]
+}

@@ -89,17 +89,41 @@ async function recordAndRun(
         state: sandbox.state,
       });
     }
+    // concave:begin command-dispatch-custody
+    // why: A lost command reply must retain possible delivery rather than look safe to retry.
+    // preserves: packages/convex/src/component/executions.ts#execution-custody
+    // witness: packages/convex/src/component/custody.test.ts
+    // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+    await ctx.runMutation(internal.executions.updateExecution, {
+      executionId,
+      outcome: "unconfirmed",
+    });
+    // concave:end command-dispatch-custody
     const response = await execute();
     const output = response.result ?? response.artifacts?.stdout ?? "";
     await ctx.runMutation(internal.executions.finishExecution, {
       executionId,
       status: "completed",
+      // concave:begin command-exit-custody
+      // why: The validated provider response establishes exit independently of action bookkeeping.
+      // preserves: packages/convex/src/component/executions.ts#execution-custody
+      // witness: packages/convex/src/component/custody.test.ts
+      // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+      outcome: "exited",
+      // concave:end command-exit-custody
       exitCode: response.exitCode,
       result: truncate(output, MAX_STORED_OUTPUT),
     });
     return {
       executionId,
-      exitCode: response.exitCode ?? 0,
+      // concave:begin command-exit-value
+      // why: A validated exit code is returned exactly; a missing value is never invented.
+      // preserves: packages/convex/src/component/executions.ts#execution-custody
+      // witness: packages/convex/src/component/custody.test.ts
+      // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+      exitCode: response.exitCode,
+      // concave:end command-exit-value
+
       // Bounded so huge outputs can't blow Convex's function return limits
       // after the execution was already marked completed.
       result: truncate(output, MAX_RETURNED_OUTPUT),
@@ -351,12 +375,32 @@ export const runBackground = action({
           state: sandbox.state,
         });
       }
-      await client.createSession(args.sandboxId, sessionId);
+      // concave:begin background-command-admission
+      // why: Validate shell arguments first and retain session cleanup and possible command delivery before either can lose a provider reply.
+      // preserves: packages/convex/src/component/executions.ts#execution-custody
+      // witness: packages/convex/src/component/custody.test.ts
+      // remove-when: Upstream keeps dispatch and cleanup custody independently of action status.
+      const command = composeSessionCommand(args.command, args.cwd, args.envs);
+      await ctx.runMutation(internal.executions.updateExecution, {
+        executionId,
+        sessionId,
+      });
+      await ctx.runMutation(internal.executions.recordCleanup, {
+        executionId,
+        cleanup: "pending",
+      });
       sessionCreated = true;
+      await client.createSession(args.sandboxId, sessionId);
+      await ctx.runMutation(internal.executions.updateExecution, {
+        executionId,
+        outcome: "unconfirmed",
+      });
+
       const { cmdId } = await client.sessionExec(args.sandboxId, sessionId, {
-        command: composeSessionCommand(args.command, args.cwd, args.envs),
+        command,
         runAsync: true,
       });
+      // concave:end background-command-admission
       await ctx.runMutation(internal.executions.updateExecution, {
         executionId,
         sessionId,
@@ -371,13 +415,22 @@ export const runBackground = action({
       });
       return { executionId };
     } catch (error) {
-      // Don't leave an orphaned session (and possibly a started command)
-      // running with no poller attached.
+      // concave:begin background-cleanup-custody
+      // why: A swallowed deletion error must remain pending cleanup rather than claim remote work stopped.
+      // preserves: packages/convex/src/component/executions.ts#execution-custody
+      // witness: packages/convex/src/component/custody.test.ts
+      // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
       if (sessionCreated) {
-        await client
-          .deleteSession(args.sandboxId, sessionId)
-          .catch(() => undefined);
+        await removeExecutionSession(
+          ctx,
+          client,
+          executionId,
+          args.sandboxId,
+          sessionId,
+        );
       }
+      // concave:end background-cleanup-custody
+
       const transitioned = await ctx.runMutation(
         internal.executions.finishExecution,
         {
@@ -462,13 +515,30 @@ export const pollExecution = internalAction({
           {
             executionId: args.executionId,
             status: command.exitCode === 0 ? "completed" : "failed",
+            // concave:begin background-command-exit
+            // why: Observed command exit settles provider outcome independently of inherited action status.
+            // preserves: packages/convex/src/component/executions.ts#execution-custody
+            // witness: packages/convex/src/component/custody.test.ts
+            // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+            outcome: "exited",
+            // concave:end background-command-exit
             exitCode: command.exitCode,
             result: truncate(logs, MAX_STORED_OUTPUT),
           },
         );
-        await client
-          .deleteSession(execution.sandboxId, execution.sessionId)
-          .catch(() => undefined);
+        // concave:begin completed-session-cleanup
+        // why: Keep failed cleanup visible even after a command exit has been observed.
+        // preserves: packages/convex/src/component/executions.ts#execution-custody
+        // witness: packages/convex/src/component/custody.test.ts
+        // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+        await removeExecutionSession(
+          ctx,
+          client,
+          args.executionId,
+          execution.sandboxId,
+          execution.sessionId,
+        );
+        // concave:end completed-session-cleanup
         // Lost a race (e.g. cancelled meanwhile): the winner already notified.
         if (transitioned) {
           await notifyComplete(
@@ -499,11 +569,21 @@ export const pollExecution = internalAction({
       // Tolerate transient failures (network, sandbox restarting) before
       // declaring the execution dead.
       if (args.failures + 1 >= MAX_POLL_FAILURES) {
-        // Make the terminal state honest: kill the session so the command
-        // can't keep running after its row says "failed".
-        await client
-          .deleteSession(execution.sandboxId, execution.sessionId)
-          .catch(() => undefined);
+        // concave:begin unconfirmed-session-cleanup
+        // why: Repeated poll errors establish a supervision failure, never a stopped remote process.
+        // preserves: packages/convex/src/component/executions.ts#execution-custody
+        // witness: packages/convex/src/component/custody.test.ts
+        // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+        // Failed supervision proves neither command exit nor sandbox deletion.
+        await removeExecutionSession(
+          ctx,
+          client,
+          args.executionId,
+          execution.sandboxId,
+          execution.sessionId,
+        );
+        // concave:end unconfirmed-session-cleanup
+
         const transitioned = await ctx.runMutation(
           internal.executions.finishExecution,
           {
@@ -560,9 +640,15 @@ export const cancelExecution = action({
     if (execution.status !== "running") {
       throw new Error(`Execution is not running (status: ${execution.status})`);
     }
-    if (!execution.sessionId) {
-      throw new Error("Only background executions can be cancelled");
+    // concave:begin acknowledged-command-cancellation
+    // why: A retained session intent is not an acknowledged dispatch; deleting an absent session can race a late creation and command.
+    // preserves: packages/convex/src/component/executions.ts#execution-custody
+    // witness: packages/convex/src/component/custody.test.ts
+    // remove-when: Upstream separates command admission and provider acknowledgement.
+    if (!execution.sessionId || !execution.commandId) {
+      throw new Error("Only acknowledged background executions can be cancelled");
     }
+    // concave:end acknowledged-command-cancellation
     const client = new DaytonaClient(config);
     try {
       await client.deleteSession(execution.sandboxId, execution.sessionId);
@@ -572,6 +658,16 @@ export const cancelExecution = action({
         throw error;
       }
     }
+    // concave:begin cancelled-session-custody
+    // why: Session deletion or absence is acknowledged separately from command outcome.
+    // preserves: packages/convex/src/component/executions.ts#execution-custody
+    // witness: packages/convex/src/component/custody.test.ts
+    // remove-when: Upstream distinguishes action lifecycle, remote outcome and cleanup custody.
+    await ctx.runMutation(internal.executions.recordCleanup, {
+      executionId: args.executionId,
+      cleanup: "acknowledged",
+    });
+    // concave:end cancelled-session-custody
     const transitioned = await ctx.runMutation(
       internal.executions.finishExecution,
       { executionId: args.executionId, status: "cancelled" },
@@ -588,3 +684,65 @@ export const cancelExecution = action({
     return null;
   },
 });
+
+// concave:begin provider-cleanup-owner
+// why: Retain cleanup failure and permit idempotent terminal session cleanup without executing another command.
+// preserves: packages/convex/src/component/executions.ts#execution-custody
+// witness: packages/convex/src/component/custody.test.ts
+// remove-when: Upstream keeps and retries cleanup obligations separately from action status.
+/** A session acknowledgement is narrower than command exit or sandbox deletion. */
+async function removeExecutionSession(
+  ctx: ActionCtx,
+  client: DaytonaClient,
+  executionId: Id<"executions">,
+  sandboxId: string,
+  sessionId: string,
+): Promise<boolean> {
+  await ctx.runMutation(internal.executions.recordCleanup, {
+    executionId,
+    cleanup: "pending",
+  });
+  try {
+    await client.deleteSession(sandboxId, sessionId);
+  } catch (error) {
+    if (!(error instanceof DaytonaApiError && error.status === 404))
+      return false;
+  }
+  await ctx.runMutation(internal.executions.recordCleanup, {
+    executionId,
+    cleanup: "acknowledged",
+  });
+  return true;
+}
+
+/** Retry session cleanup after terminal supervision; never re-execute a command. */
+export const retryCleanup = action({
+  args: { executionId: v.id("executions"), apiUrl: v.optional(v.string()) },
+  returns: v.object({
+    cleanup: v.union(v.literal("pending"), v.literal("acknowledged")),
+  }),
+  handler: async (ctx, args) => {
+    const execution = await ctx.runQuery(internal.executions.getInternal, {
+      executionId: args.executionId,
+    });
+    if (!execution?.sessionId)
+      throw new Error("Execution has no retained session");
+    if (execution.status === "running")
+      throw new Error("Cancel a running execution before retrying cleanup");
+    if (execution.cleanup === "acknowledged")
+      return { cleanup: "acknowledged" as const };
+    const config = backgroundConfig(args.apiUrl);
+    if (!config) throw new Error(MISSING_API_KEY);
+    const removed = await removeExecutionSession(
+      ctx,
+      new DaytonaClient(config),
+      args.executionId,
+      execution.sandboxId,
+      execution.sessionId,
+    );
+    return {
+      cleanup: removed ? ("acknowledged" as const) : ("pending" as const),
+    };
+  },
+});
+// concave:end provider-cleanup-owner

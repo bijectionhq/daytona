@@ -220,7 +220,10 @@
         "packages/convex/src/component/_generated/dataModel.ts",
         "packages/convex/src/component/_generated/server.ts",
         "scripts/check_component_generated.py",
-        "packages/convex/src/component/bijection.config.ts"
+        "packages/convex/src/component/bijection.config.ts",
+        "packages/convex/src/component/transport.ts",
+        "packages/convex/src/component/transport.test.ts",
+        "packages/convex/src/component/custody.test.ts"
       ],
       "command": [
         "python3",
@@ -235,6 +238,31 @@
         }
       ],
       "timeout_seconds": 600,
+      "results": "command"
+    },
+    "provider-custody": {
+      "directory": ".",
+      "inputs": [
+        "packages/convex/src/",
+        "packages/convex/tsconfig.json",
+        "packages/convex/tsconfig.build.json",
+        "packages/convex/vitest.config.ts",
+        "packages/convex/package.json",
+        "scripts/check_daytona_custody.py"
+      ],
+      "command": [
+        "python3",
+        "scripts/check_daytona_custody.py"
+      ],
+      "toolchain": [
+        {
+          "command": [
+            "python3",
+            "--version"
+          ]
+        }
+      ],
+      "timeout_seconds": 400,
       "results": "command"
     }
   },
@@ -261,7 +289,8 @@
         "packages/convex/src/component/types.ts",
         "packages/convex/src/component/webhooks.test.ts",
         "packages/convex/src/component/webhooks.ts",
-        "packages/convex/src/component/bijection.config.ts"
+        "packages/convex/src/component/bijection.config.ts",
+        "packages/convex/src/component/"
       ],
       "generator": "scripts/component_fork_codegen.py in the Bijection platform checkout",
       "check": "component-generated",

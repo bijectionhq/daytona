@@ -14,6 +14,14 @@
  * payload shapes mirror `packages/n8n-nodes-daytona`.
  */
 
+// concave:begin bounded-provider-import
+// why: All inherited API methods share one bounded transport and completion decoder.
+// preserves: packages/convex/src/component/transport.ts#bounded-provider-response
+// witness: packages/convex/src/component/transport.test.ts
+// remove-when: Upstream bounds provider response custody and validates completion.
+import { providerResponse, executionResponse } from "./transport.js";
+// concave:end bounded-provider-import
+
 import {
   DEFAULT_API_URL,
   type ApiSandbox,
@@ -80,15 +88,16 @@ export class DaytonaClient {
     const encoded = params.toString();
     const qs = encoded ? `?${encoded}` : "";
     const isForm = body instanceof FormData;
-    const response = await fetch(`${url}${qs}`, {
+    // concave:begin bounded-provider-transport
+    // why: Buffering an unlimited provider body before truncation cannot bound host memory or an action deadline.
+    // preserves: packages/convex/src/component/transport.ts#bounded-provider-response
+    // witness: packages/convex/src/component/transport.test.ts
+    // remove-when: Upstream bounds response bytes and the complete request lifetime.
+    const response = await providerResponse(`${url}${qs}`, {
       method,
       headers: this.headers(body !== undefined && !isForm),
       body:
-        body === undefined
-          ? undefined
-          : isForm
-            ? body
-            : JSON.stringify(body),
+        body === undefined ? undefined : isForm ? body : JSON.stringify(body),
     });
     if (!response.ok) {
       const detail = await response.text().catch(() => "");
@@ -98,6 +107,7 @@ export class DaytonaClient {
       );
     }
     return response;
+    // concave:end bounded-provider-transport
   }
 
   private async api<T>(
@@ -237,7 +247,13 @@ export class DaytonaClient {
       envs: args.envs,
       timeout: args.timeoutSeconds,
     });
-    return (await response.json()) as ProcessExecutionResponse;
+    // concave:begin confirmed-command-exit
+    // why: A missing or invalid exit code cannot be a completed command or an invented successful zero.
+    // preserves: packages/convex/src/component/transport.ts#confirmed-command-exit
+    // witness: packages/convex/src/component/transport.test.ts
+    // remove-when: Upstream validates command completion responses.
+    return executionResponse(await response.json());
+    // concave:end confirmed-command-exit
   }
 
   async runCode(
@@ -262,7 +278,13 @@ export class DaytonaClient {
         timeout: args.timeoutSeconds,
       },
     );
-    return (await response.json()) as ProcessExecutionResponse;
+    // concave:begin confirmed-code-exit
+    // why: A missing or invalid exit code cannot be a completed command or an invented successful zero.
+    // preserves: packages/convex/src/component/transport.ts#confirmed-command-exit
+    // witness: packages/convex/src/component/transport.test.ts
+    // remove-when: Upstream validates command completion responses.
+    return executionResponse(await response.json());
+    // concave:end confirmed-code-exit
   }
 
   // ---- Sessions (background execution) ----
