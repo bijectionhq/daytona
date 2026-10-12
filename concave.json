@@ -167,7 +167,7 @@
       "replacements": [
         {
           "from": "# --- Python ---\n__pycache__/\n*.py[cod]\n*.egg-info/\n.eggs/\nbuild/\ndist/\n.venv/\nvenv/\n.env\n.pytest_cache/\n.ruff_cache/\n.mypy_cache/\n.coverage\nhtmlcov/\n\n# --- Node ---\nnode_modules/\n*.tsbuildinfo\n.npm/\nnpm-debug.log*\n\n# --- OS / editor ---\n.DS_Store\n*.log\n.idea/\n.vscode/\n",
-          "to": "# --- Python ---\n__pycache__/\n*.py[cod]\n*.egg-info/\n.eggs/\nbuild/\ndist/\n.venv/\nvenv/\n.env\n.pytest_cache/\n.ruff_cache/\n.mypy_cache/\n.coverage\nhtmlcov/\n\n# --- Node ---\nnode_modules/\n*.tsbuildinfo\n.npm/\nnpm-debug.log*\n\n# --- OS / editor ---\n.DS_Store\n*.log\n.idea/\n.vscode/\n\n# Source-preservation tooling is source, including its coverage package.\n!/tools/\n!/tools/**\n\n/target/\n/node_modules/\n/dist/\n"
+          "to": "# --- Python ---\n__pycache__/\n*.py[cod]\n*.egg-info/\n.eggs/\nbuild/\ndist/\n.venv/\nvenv/\n.env\n.pytest_cache/\n.ruff_cache/\n.mypy_cache/\n.coverage\nhtmlcov/\n\n# --- Node ---\nnode_modules/\n*.tsbuildinfo\n.npm/\nnpm-debug.log*\n\n# --- OS / editor ---\n.DS_Store\n*.log\n.idea/\n.vscode/\n\n# Source-preservation tooling is source, including its coverage package.\n!/tools/\n!/tools/**\n\n/target/\n/node_modules/\n/dist/\n\n# Checker dependencies and runtime output are rebuildable, never source.\n/tools/concave/**/node_modules/\n/tools/concave/target/\n"
         }
       ],
       "explanation": {
