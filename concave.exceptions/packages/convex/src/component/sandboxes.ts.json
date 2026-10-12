@@ -1,0 +1,23 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "sandbox-egress-forwarding",
+      "path": "packages/convex/src/component/sandboxes.ts",
+      "upstream_sha256": "cd10582f79be8fb24d544dbb144b453da22b7ee62cf19e124c6c1cba97cb6d97",
+      "start": 261,
+      "end": 261,
+      "replacement_sha256": "0ae376f1a297108845c018bcd9512ad64d862e657ef97e107836754f261f8b0b",
+      "fence": true
+    },
+    {
+      "id": "sandbox-egress-validator",
+      "path": "packages/convex/src/component/sandboxes.ts",
+      "upstream_sha256": "cd10582f79be8fb24d544dbb144b453da22b7ee62cf19e124c6c1cba97cb6d97",
+      "start": 217,
+      "end": 217,
+      "replacement_sha256": "f7e974a0ebc69a21bc12f99a7c976e2768a5d7bfe03146a2649ca7e6034aaa4e",
+      "fence": true
+    }
+  ]
+}

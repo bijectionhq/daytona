@@ -35,6 +35,14 @@ export interface CreateSandboxArgs {
   envVars?: Record<string, string>;
   labels?: Record<string, string>;
   public?: boolean;
+  // concave:begin sandbox-egress-option
+  // why: Forward the provider's explicit outbound-blocking setting without altering omitted defaults.
+  // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
+  // witness: packages/convex/src/component/component.test.ts
+  // remove-when: Upstream exposes networkBlockAll through this declaration.
+  /** Request outbound blocking; its enforcement depends on provider account capabilities. */
+  networkBlockAll?: boolean;
+  // concave:end sandbox-egress-option
   cpu?: number;
   memory?: number;
   disk?: number;

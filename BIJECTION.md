@@ -21,6 +21,16 @@ Original examples and documentation are retained for comparison; they do not
 advertise Bijection's native authority, billing, or recovery guarantees.
 GitHub Actions are disabled. Verification is explicit and local.
 
+## Sandbox outbound networking
+
+The host-facing create options accept `networkBlockAll` and forward it on the
+original provider creation request. Omission preserves provider defaults; an
+explicit false remains false. This is a configuration request, not proof of
+firewall enforcement. The native agent binding must separately verify that the
+selected provider account can enforce its required policy before admission.
+Daytona documents the account-tier restriction in its
+[network limits](https://www.daytona.io/docs/en/network-limits/).
+
 ## Provider execution evidence
 
 An execution has three independent facts. The inherited `status` records local

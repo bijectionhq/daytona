@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "sandbox-egress-request",
+      "path": "packages/convex/src/component/types.ts",
+      "upstream_sha256": "2c5fd907f42551016c401ab1f6003d67edc0e4f0a3c89bbce2e41cfba869610f",
+      "start": 68,
+      "end": 68,
+      "replacement_sha256": "882dea71fa1b9624871114a884c39d2ff21525a2185a6f039b7f2a8f8fa55c64",
+      "fence": true
+    }
+  ]
+}

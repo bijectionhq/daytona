@@ -207,6 +207,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             labels?: Record<string, string>;
             memory?: number;
             name?: string;
+            networkBlockAll?: boolean;
             public?: boolean;
             snapshot?: string;
             target?: string;

@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "sandbox-egress-witness",
+      "path": "packages/convex/src/component/component.test.ts",
+      "upstream_sha256": "f475e69d3c5dddc9abc90f16b916ed24f4be0a5aa77bebf9d58818147fb46c9d",
+      "start": 158,
+      "end": 158,
+      "replacement_sha256": "d7ac85d3f2b56065fe280e6d661a4a60a2a059a44908a1bdbabb9b195e9b4bb2",
+      "fence": true
+    }
+  ]
+}

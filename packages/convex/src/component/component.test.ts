@@ -156,6 +156,38 @@ describe("sandbox lifecycle actions", () => {
     expect(sandbox?.userKey).toBe("user-1");
   });
 
+  // concave:begin sandbox-egress-witness
+  // why: Exercise explicit true, false and omitted provider firewall settings through the component action.
+  // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
+  // witness: scripts/check_daytona_custody.py
+  // remove-when: Upstream qualifies networkBlockAll creation semantics.
+  test("create forwards explicit outbound blocking and preserves omitted defaults", async () => {
+    for (const value of [undefined, false, true]) {
+      const t = initBijectionTest();
+      const { calls } = stubFetch([
+        {
+          method: "POST",
+          match: "/api/sandbox",
+          response: () => json(startedSandbox),
+        },
+      ]);
+      await t.action(api.sandboxes.create, {
+        config,
+        wait: false,
+        ...(value === undefined ? {} : { networkBlockAll: value }),
+      });
+      const requests = calls
+        .filter((call) => call.method === "POST")
+        .map((call) => JSON.parse(call.body ?? "{}"));
+      expect(requests).toHaveLength(1);
+      if (value === undefined)
+        expect(requests[0]).not.toHaveProperty("networkBlockAll");
+      else expect(requests[0]?.networkBlockAll).toBe(value);
+    }
+  });
+
+  // concave:end sandbox-egress-witness
+
   test("create rejects resources without image, and snapshot+image together", async () => {
     const t = initBijectionTest();
     stubFetch([]);

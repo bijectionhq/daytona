@@ -215,6 +215,13 @@ export const create = action({
     envVars: v.optional(v.record(v.string(), v.string())),
     labels: v.optional(v.record(v.string(), v.string())),
     public: v.optional(v.boolean()),
+    // concave:begin sandbox-egress-validator
+    // why: Validate the provider outbound-blocking option as an optional boolean.
+    // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
+    // witness: packages/convex/src/component/component.test.ts
+    // remove-when: Upstream validates networkBlockAll at creation.
+    networkBlockAll: v.optional(v.boolean()),
+    // concave:end sandbox-egress-validator
     /** CPU cores — only valid with `image` (snapshots define their own resources). */
     cpu: v.optional(v.number()),
     memory: v.optional(v.number()),
@@ -259,6 +266,13 @@ export const create = action({
       env: args.envVars,
       labels: args.labels,
       public: args.public,
+      // concave:begin sandbox-egress-forwarding
+      // why: Send the explicit provider firewall option on the original creation request.
+      // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
+      // witness: packages/convex/src/component/component.test.ts
+      // remove-when: Upstream forwards networkBlockAll on creation.
+      networkBlockAll: args.networkBlockAll,
+      // concave:end sandbox-egress-forwarding
       cpu: args.cpu,
       memory: args.memory,
       disk: args.disk,
