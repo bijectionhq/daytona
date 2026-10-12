@@ -2,7 +2,8 @@
 import type { ProcessExecutionResponse } from "./types.js";
 
 export const MAX_PROVIDER_RESPONSE_BYTES = 8 * 1024 * 1024;
-export const PROVIDER_REQUEST_TIMEOUT_MS = 60_000;
+/** Match the inherited action ceiling; individual native runs may end sooner. */
+export const PROVIDER_REQUEST_TIMEOUT_MS = 10 * 60_000;
 const MAX_ERROR_RESPONSE_BYTES = 2_000;
 
 // concave:invariant bounded-provider-response
@@ -20,7 +21,7 @@ export async function providerResponse(
       controller.abort();
       void reader?.cancel().catch(() => undefined);
       reject(
-        new Error("Daytona provider request exceeded its 60 second deadline"),
+        new Error("Daytona provider request exceeded its 10 minute deadline"),
       );
     }, PROVIDER_REQUEST_TIMEOUT_MS);
   });
@@ -29,7 +30,7 @@ export async function providerResponse(
     if (controller.signal.aborted) {
       void response.body?.cancel().catch(() => undefined);
       throw new Error(
-        "Daytona provider request exceeded its 60 second deadline",
+        "Daytona provider request exceeded its 10 minute deadline",
       );
     }
     const limit = response.ok
@@ -104,4 +105,37 @@ export function executionResponse(value: unknown): ProcessExecutionResponse {
     exitCode: response.exitCode!,
     result: response.result ?? response.artifacts?.stdout ?? "",
   };
+}
+
+// concave:invariant acknowledged-session-command
+// An empty or missing command identity cannot establish an acknowledged dispatch.
+export function sessionExecutionResponse(value: unknown): { cmdId: string } {
+  const response = value as { cmdId?: unknown } | null;
+  if (!response || typeof response.cmdId !== "string" || !response.cmdId)
+    throw new Error("Invalid Daytona command acknowledgement");
+  return { cmdId: response.cmdId };
+}
+
+// concave:invariant confirmed-session-command-exit
+// A command may still be running; a present exit code must be an actual integer.
+export function sessionCommandResponse(value: unknown): {
+  id: string;
+  command: string;
+  exitCode?: number | null;
+} {
+  const response = value as {
+    id?: unknown;
+    command?: unknown;
+    exitCode?: unknown;
+  } | null;
+  if (
+    !response ||
+    typeof response.id !== "string" ||
+    typeof response.command !== "string" ||
+    (response.exitCode !== undefined &&
+      response.exitCode !== null &&
+      !Number.isSafeInteger(response.exitCode))
+  )
+    throw new Error("Invalid Daytona session command response");
+  return response as { id: string; command: string; exitCode?: number | null };
 }

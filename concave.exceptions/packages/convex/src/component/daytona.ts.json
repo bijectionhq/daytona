@@ -7,7 +7,7 @@
       "upstream_sha256": "a906241a0093342ed5b14c5ec40fd18ee3dbb0171c1bd089327a965188cc8b3b",
       "start": 16,
       "end": 16,
-      "replacement_sha256": "41240926be57f1472574ecf50a2e0d60eda5028b38bc92ac369859d8118afbe0",
+      "replacement_sha256": "594c2a551d3a4bd07a6cbcf5b3097189a5a2fe5b366ac0171d662414ff21827f",
       "fence": true
     },
     {
@@ -17,6 +17,24 @@
       "start": 82,
       "end": 100,
       "replacement_sha256": "63ebb1fefb5f4de079a813c87833f4d971b80e5b86f745accbf447885ecefd5c",
+      "fence": true
+    },
+    {
+      "id": "confirmed-background-ack",
+      "path": "packages/convex/src/component/daytona.ts",
+      "upstream_sha256": "a906241a0093342ed5b14c5ec40fd18ee3dbb0171c1bd089327a965188cc8b3b",
+      "start": 284,
+      "end": 285,
+      "replacement_sha256": "3c37e320ff27a41b2c0964b5126d74bcd1f90aa2f6049b0d4d411ac4dee21f17",
+      "fence": true
+    },
+    {
+      "id": "confirmed-background-exit",
+      "path": "packages/convex/src/component/daytona.ts",
+      "upstream_sha256": "a906241a0093342ed5b14c5ec40fd18ee3dbb0171c1bd089327a965188cc8b3b",
+      "start": 298,
+      "end": 303,
+      "replacement_sha256": "31f98e40186513d27b9f654b85baf22e0099c8231503b7b00ade66f525e686e8",
       "fence": true
     },
     {

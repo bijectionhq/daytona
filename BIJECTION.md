@@ -39,7 +39,8 @@ outcomes and pending cleanup. Host applications still enforce authorization.
 These records are component bookkeeping, not native agent admission, protected
 output custody or an external-call receipt.
 
-Every HTTP request and its body share a 60 second deadline. Actual response
+Every HTTP request and its body share a ten-minute deadline, matching the
+inherited action ceiling rather than shortening a valid long-running command. Actual response
 bytes are limited to 8 MiB before JSON/text/binary decoding; error details are
 limited to 2,000 bytes. Oversize and deadline refusals preserve command
 uncertainty. No missing exit code becomes a successful zero.

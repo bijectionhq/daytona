@@ -19,7 +19,9 @@
 // preserves: packages/convex/src/component/transport.ts#bounded-provider-response
 // witness: packages/convex/src/component/transport.test.ts
 // remove-when: Upstream bounds provider response custody and validates completion.
-import { providerResponse, executionResponse } from "./transport.js";
+import {
+  providerResponse, executionResponse, sessionExecutionResponse, sessionCommandResponse,
+} from "./transport.js";
 // concave:end bounded-provider-import
 
 import {
@@ -304,7 +306,13 @@ export class DaytonaClient {
       `/process/session/${encodeURIComponent(sessionId)}/exec`,
       { command: args.command, runAsync: args.runAsync },
     );
-    return (await response.json()) as { cmdId: string };
+    // concave:begin confirmed-background-ack
+    // why: A lost or invalid command acknowledgement cannot leave a row falsely supervised without a command identity.
+    // preserves: packages/convex/src/component/transport.ts#acknowledged-session-command
+    // witness: packages/convex/src/component/custody.test.ts
+    // remove-when: Upstream validates background command acknowledgement before scheduling supervision.
+    return sessionExecutionResponse(await response.json());
+    // concave:end confirmed-background-ack
   }
 
   /** `exitCode` is only present once the command has finished. */
@@ -318,11 +326,13 @@ export class DaytonaClient {
       "GET",
       `/process/session/${encodeURIComponent(sessionId)}/command/${encodeURIComponent(commandId)}`,
     );
-    return (await response.json()) as {
-      id: string;
-      command: string;
-      exitCode?: number | null;
-    };
+    // concave:begin confirmed-background-exit
+    // why: A malformed background exit code is uncertainty, never command completion evidence.
+    // preserves: packages/convex/src/component/transport.ts#confirmed-session-command-exit
+    // witness: packages/convex/src/component/custody.test.ts
+    // remove-when: Upstream validates session command completion responses.
+    return sessionCommandResponse(await response.json());
+    // concave:end confirmed-background-exit
   }
 
   async getSessionCommandLogs(

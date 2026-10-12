@@ -291,6 +291,82 @@ describe("command outcome and cleanup custody", () => {
     });
   });
 
+  test.each([undefined, "", 3])(
+    "invalid background acknowledgement %s retains uncertainty",
+    async (cmdId) => {
+      vi.stubEnv("DAYTONA_API_KEY", config.apiKey);
+      const t = initBijectionTest();
+      let sent = 0;
+      vi.stubGlobal("fetch", async (url: string, init?: RequestInit) => {
+        if (init?.method === "DELETE")
+          return new Response(null, { status: 204 });
+        if (url.endsWith("/exec")) {
+          sent++;
+          return json({ cmdId });
+        }
+        if (init?.method === "POST") return json({});
+        return json(sandbox);
+      });
+      await expect(
+        t.action(api.process.runBackground, {
+          sandboxId: "sandbox",
+          command: "compute",
+        }),
+      ).rejects.toThrow(/Invalid Daytona command acknowledgement/);
+      const [execution] = await t.query(api.executions.list, {
+        sandboxId: "sandbox",
+      });
+      expect(execution).toMatchObject({
+        status: "failed",
+        outcome: "unconfirmed",
+        cleanup: "acknowledged",
+      });
+      expect(execution.commandId).toBeUndefined();
+      expect(sent).toBe(1);
+    },
+  );
+
+  test.each(["0.5", '"0"', "1e309"])(
+    "invalid background exit %s never records completion",
+    async (exitCode) => {
+      vi.stubEnv("DAYTONA_API_KEY", config.apiKey);
+      const t = initBijectionTest();
+      const executionId = await t.mutation(internal.executions.startExecution, {
+        sandboxId: "sandbox",
+        kind: "command",
+        input: "compute",
+      });
+      await t.mutation(internal.executions.updateExecution, {
+        executionId,
+        sessionId: "session",
+        commandId: "command",
+        outcome: "unconfirmed",
+      });
+      vi.stubGlobal("fetch", async (url: string, init?: RequestInit) => {
+        if (init?.method === "DELETE")
+          return new Response(null, { status: 204 });
+        if (url.endsWith("/command/command"))
+          return new Response(
+            '{"id":"command","command":"compute","exitCode":' + exitCode + "}",
+            { headers: { "Content-Type": "application/json" } },
+          );
+        return json(sandbox);
+      });
+      await t.action(internal.process.pollExecution, {
+        executionId,
+        delayMs: 1000,
+        failures: 4,
+      });
+      const execution = await t.query(api.executions.get, { executionId });
+      expect(execution).toMatchObject({
+        status: "failed",
+        outcome: "unconfirmed",
+        cleanup: "acknowledged",
+      });
+      expect(execution?.exitCode).toBeUndefined();
+    },
+  );
+
   test("acknowledged cleanup cannot be rolled back by a later stale pending write", async () => {
     const t = initBijectionTest();
     const executionId = await t.mutation(internal.executions.startExecution, {

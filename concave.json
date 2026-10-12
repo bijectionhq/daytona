@@ -6,7 +6,8 @@
     "tools/concave/",
     "scripts/",
     "AGENTS.md",
-    "scripts/check_agent_mirror.py"
+    "scripts/check_agent_mirror.py",
+    ".nvmrc"
   ],
   "families": [
     {
@@ -40,7 +41,8 @@
         "release-please-config.json",
         "scripts/",
         "tools/",
-        "concave.exceptions/"
+        "concave.exceptions/",
+        ".nvmrc"
       ]
     }
   ],
