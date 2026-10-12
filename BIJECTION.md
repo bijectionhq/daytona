@@ -3,8 +3,9 @@
 This is a maintained fork of daytona/integrations at `4f10159a3ae5faa31792bb59abaa52aeecb5546c`.
 The package keeps inherited validators, function references, serialization, and
 transaction behavior. Its SDK imports resolve through the application's single
-`bijection` installation. Native agent runs remain owned by the platform engine;
-conversation storage and streaming remain owned by this component.
+`bijection` installation. Sandbox records and low-level provider actions remain owned by this component.
+Those actions do not acquire native agent recovery or authority merely by
+being imported.
 
 Every inherited difference is checked by the same Concave source in Bijection.
 Mechanical module and public identifier changes have explicit recipes in

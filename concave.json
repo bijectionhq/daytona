@@ -219,7 +219,8 @@
         "packages/convex/src/component/_generated/component.ts",
         "packages/convex/src/component/_generated/dataModel.ts",
         "packages/convex/src/component/_generated/server.ts",
-        "scripts/check_component_generated.py"
+        "scripts/check_component_generated.py",
+        "packages/convex/src/component/bijection.config.ts"
       ],
       "command": [
         "python3",
@@ -259,7 +260,8 @@
         "packages/convex/src/component/setup.test.ts",
         "packages/convex/src/component/types.ts",
         "packages/convex/src/component/webhooks.test.ts",
-        "packages/convex/src/component/webhooks.ts"
+        "packages/convex/src/component/webhooks.ts",
+        "packages/convex/src/component/bijection.config.ts"
       ],
       "generator": "scripts/component_fork_codegen.py in the Bijection platform checkout",
       "check": "component-generated",
