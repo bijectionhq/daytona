@@ -9,8 +9,8 @@
  * Daytona API and record the observed state for the host app to subscribe to.
  */
 
-import { paginationOptsValidator } from "convex/server";
-import { v } from "convex/values";
+import { paginationOptsValidator } from "bijection/server";
+import { v } from "bijection/values";
 import { internal } from "./_generated/api.js";
 import {
   action,

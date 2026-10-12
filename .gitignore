@@ -25,3 +25,11 @@ npm-debug.log*
 *.log
 .idea/
 .vscode/
+
+# Source-preservation tooling is source, including its coverage package.
+!/tools/
+!/tools/**
+
+/target/
+/node_modules/
+/dist/

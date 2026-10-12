@@ -1,4 +1,4 @@
-import { v, type Infer } from "convex/values";
+import { v, type Infer } from "bijection/values";
 
 /**
  * Connection settings for the Daytona API. Components are isolated from the

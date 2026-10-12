@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "exceptions": [
+    {
+      "id": "native-component-definition",
+      "path": "packages/convex/src/component/convex.config.ts",
+      "upstream_sha256": "f6d185aa85157694eff92712db169389a381af004e58f7f204e64c8406c75ae6",
+      "start": 0,
+      "end": 15,
+      "replacement_sha256": "9651c197d52c44b8acdb795187d932a7e9759e01fe91d678fa27522bd0277918",
+      "fence": true
+    }
+  ]
+}

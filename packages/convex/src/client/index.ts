@@ -13,8 +13,8 @@
  * themselves, so the client forwards them on each call.
  */
 
-import { createFunctionHandle } from "convex/server";
-import type { FunctionReference, FunctionReturnType } from "convex/server";
+import { createFunctionHandle } from "bijection/server";
+import type { FunctionReference, FunctionReturnType } from "bijection/server";
 import type { ComponentApi } from "../component/_generated/component.js";
 
 export interface DaytonaOptions {

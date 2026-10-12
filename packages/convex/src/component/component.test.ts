@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { api, internal } from "./_generated/api.js";
-import { initConvexTest } from "./setup.test.js";
+import { initBijectionTest } from "./setup.test.js";
 
 const config = { apiKey: "test-key", apiUrl: "https://daytona.test/api" };
 
@@ -60,7 +60,7 @@ afterEach(() => {
 
 describe("state bookkeeping (queries + internal mutations)", () => {
   test("upsertSandbox inserts then patches without clearing fields", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await t.mutation(internal.sandboxes.upsertSandbox, {
       sandboxId: "sbx-1",
       state: "creating",
@@ -80,7 +80,7 @@ describe("state bookkeeping (queries + internal mutations)", () => {
   });
 
   test("list scopes by userKey", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await t.mutation(internal.sandboxes.upsertSandbox, {
       sandboxId: "sbx-1",
       state: "started",
@@ -99,7 +99,7 @@ describe("state bookkeeping (queries + internal mutations)", () => {
   });
 
   test("execution lifecycle: running → completed", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const executionId = await t.mutation(internal.executions.startExecution, {
       sandboxId: "sbx-1",
       kind: "command",
@@ -128,7 +128,7 @@ describe("state bookkeeping (queries + internal mutations)", () => {
 
 describe("sandbox lifecycle actions", () => {
   test("create records the sandbox and waits for started", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     let polls = 0;
     stubFetch([
       {
@@ -157,7 +157,7 @@ describe("sandbox lifecycle actions", () => {
   });
 
   test("create rejects resources without image, and snapshot+image together", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch([]);
 
     await expect(
@@ -173,7 +173,7 @@ describe("sandbox lifecycle actions", () => {
   });
 
   test("create from image sends buildInfo and allows resources", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch([
       {
         method: "POST",
@@ -206,7 +206,7 @@ describe("sandbox lifecycle actions", () => {
   });
 
   test("create surfaces failure states and records the error", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch([
       {
         method: "POST",
@@ -229,7 +229,7 @@ describe("sandbox lifecycle actions", () => {
   });
 
   test("refresh returns null and marks destroyed on 404", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await t.mutation(internal.sandboxes.upsertSandbox, {
       sandboxId: "sbx-gone",
       state: "started",
@@ -252,7 +252,7 @@ describe("sandbox lifecycle actions", () => {
   });
 
   test("stop treats an already-deleted sandbox (404) as destroyed", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await t.mutation(internal.sandboxes.upsertSandbox, {
       sandboxId: "sbx-ephemeral",
       state: "started",
@@ -275,7 +275,7 @@ describe("sandbox lifecycle actions", () => {
   });
 
   test("previewUrl returns signed URL fields", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch([
       {
         method: "GET",
@@ -297,7 +297,7 @@ describe("sandbox lifecycle actions", () => {
 
 describe("process actions", () => {
   test("run executes via the toolbox and records a completed execution", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch([
       {
         method: "GET",
@@ -340,7 +340,7 @@ describe("process actions", () => {
   });
 
   test("run records a failed execution when the toolbox errors", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch([
       {
         method: "GET",
@@ -371,7 +371,7 @@ describe("process actions", () => {
   });
 
   test("runCode posts to code-run and records kind=code", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch([
       {
         method: "GET",
@@ -405,7 +405,7 @@ describe("process actions", () => {
   });
 
   test("run rejects non-positive timeoutSeconds", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch([]);
     await expect(
       t.action(api.process.run, {
@@ -418,7 +418,7 @@ describe("process actions", () => {
   });
 
   test("run auto-starts a stopped sandbox before executing", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     let state = "stopped";
     const { calls } = stubFetch([
       {
@@ -492,7 +492,7 @@ const sessionRoutes = (commandDone: () => boolean, exitCode = 0) => [
 ];
 
 
-type Test = ReturnType<typeof initConvexTest>;
+type Test = ReturnType<typeof initBijectionTest>;
 
 /** The args each scheduled poll was given (stored as `[args]`). */
 const scheduledPolls = (t: Test) =>
@@ -512,7 +512,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("delete treats an already-gone sandbox (404) as destroyed", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await t.mutation(internal.sandboxes.upsertSandbox, {
       sandboxId: "sbx-gone",
       state: "started",
@@ -530,7 +530,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("list filters by state", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await t.mutation(internal.sandboxes.upsertSandbox, {
       sandboxId: "sbx-a",
       state: "started",
@@ -549,7 +549,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("purge deletes only old terminal rows", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await t.mutation(internal.sandboxes.upsertSandbox, {
       sandboxId: "sbx-old",
       state: "destroyed",
@@ -584,7 +584,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("runBackground clamps poll options and rejects nonsense", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch(sessionRoutes(() => false));
     await expect(
       t.action(api.process.runBackground, {
@@ -608,7 +608,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("finishExecution only transitions from running (terminal states are final)", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const executionId = await t.mutation(internal.executions.startExecution, {
       sandboxId: "sbx-1",
       kind: "command",
@@ -635,7 +635,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("cancelExecution keeps the row running when the kill fails", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch(sessionRoutes(() => false));
     const { executionId } = await t.action(api.process.runBackground, {
       apiUrl: config.apiUrl,
@@ -667,7 +667,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("purge makes progress past a prefix of non-victims", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     // 205 running rows first (never purgeable), then one finished row.
     for (let i = 0; i < 205; i++) {
       await t.mutation(internal.executions.startExecution, {
@@ -694,7 +694,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("onComplete is stored on the row; a failing handler never corrupts terminal state", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     let done = false;
     stubFetch(sessionRoutes(() => done));
 
@@ -729,7 +729,7 @@ describe("background QoL (cancel, backoff, purge, delete-404)", () => {
   });
 
   test("cancelExecution stops the command, marks cancelled, loses race to finish", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch(sessionRoutes(() => false));
 
     const { executionId } = await t.action(api.process.runBackground, {
@@ -801,7 +801,7 @@ describe("background execution", () => {
     );
 
   test("runBackground starts a session command and returns immediately", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch(sessionRoutes(() => false));
 
     const { executionId } = await t.action(api.process.runBackground, {
@@ -828,7 +828,7 @@ describe("background execution", () => {
   });
 
   test("pollExecution patches logs while running, finishes on exit", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     let done = false;
     stubFetch(sessionRoutes(() => done));
 
@@ -860,7 +860,7 @@ describe("background execution", () => {
   });
 
   test("runBackground rejects shell-unsafe env var names", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch(sessionRoutes(() => false));
     await expect(
       t.action(api.process.runBackground, {
@@ -873,7 +873,7 @@ describe("background execution", () => {
   });
 
   test("pollExecution marks failed on non-zero exit", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch(sessionRoutes(() => true, 2));
 
     const { executionId } = await t.action(api.process.runBackground, {
@@ -892,7 +892,7 @@ describe("background execution", () => {
   });
 
   test("scheduled polls never carry the API key", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch(sessionRoutes(() => false));
 
     const { executionId } = await t.action(api.process.runBackground, {
@@ -928,7 +928,7 @@ describe("background execution", () => {
   });
 
   test("runBackground needs the key passed down to the component", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch(sessionRoutes(() => false));
     vi.stubEnv("DAYTONA_API_KEY", undefined);
 
@@ -947,7 +947,7 @@ describe("background execution", () => {
   });
 
   test("polls pick up a rotated key", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     let done = false;
     const { calls } = stubFetch(sessionRoutes(() => done));
     const { executionId } = await t.action(api.process.runBackground, {
@@ -976,7 +976,7 @@ describe("background execution", () => {
   });
 
   test("polls scheduled by 1.1.0 keep going without passing the key on", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch(sessionRoutes(() => false));
     const executionId = await legacyExecution(t);
 
@@ -1002,7 +1002,7 @@ describe("background execution", () => {
   });
 
   test("with no key to use, polls wait instead of failing the execution", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch(sessionRoutes(() => false));
     // Restored in finally — a failed assertion must not leave the spy
     // swallowing error logs for the rest of the file.
@@ -1038,7 +1038,7 @@ describe("background execution", () => {
   });
 
   test("a 1.1.0 poll with no key passed down uses its own key once, without passing it on", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch(sessionRoutes(() => false));
     const executionId = await legacyExecution(t);
     vi.stubEnv("DAYTONA_API_KEY", undefined);
@@ -1069,7 +1069,7 @@ describe("binary file actions", () => {
   const allBytes = () => Uint8Array.from({ length: 256 }, (_, i) => i);
 
   test("writeFileBytes uploads the exact bytes", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     let uploaded: Uint8Array | undefined;
     let uploadUrl: string | undefined;
     vi.stubGlobal(
@@ -1103,7 +1103,7 @@ describe("binary file actions", () => {
   });
 
   test("readFileBytes returns the exact bytes", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch([
       {
         method: "GET",
@@ -1132,7 +1132,7 @@ describe("binary file actions", () => {
 
 describe("file actions", () => {
   test("readFile and writeFile round-trip through the toolbox", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const { calls } = stubFetch([
       {
         method: "GET",
@@ -1169,7 +1169,7 @@ describe("file actions", () => {
   });
 
   test("listFiles maps toolbox file info", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     stubFetch([
       {
         method: "GET",

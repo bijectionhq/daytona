@@ -10,7 +10,7 @@
  * down to the component as `DAYTONA_WEBHOOK_SECRET`.
  */
 
-import { v } from "convex/values";
+import { v } from "bijection/values";
 import { internalMutation } from "./_generated/server.js";
 
 /** Reject deliveries whose timestamp is further than this from now (replays). */

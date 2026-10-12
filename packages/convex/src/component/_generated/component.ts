@@ -4,14 +4,12 @@
  *
  * THIS CODE IS AUTOMATICALLY GENERATED.
  *
- * To regenerate, run `npx convex dev`.
+ * To regenerate, run `bijection dev`.
  * @module
  */
-
-import type { FunctionReference } from "convex/server";
-
+import type { FunctionReference } from "bijection/server";
 /**
- * A utility for referencing a Convex component's exposed API.
+ * A utility for referencing a Bijection component's exposed API.
  *
  * Useful when expecting a parameter like `components.myComponent`.
  * Usage:
@@ -21,343 +19,303 @@ import type { FunctionReference } from "convex/server";
  * }
  * ```
  */
-export type ComponentApi<Name extends string | undefined = string | undefined> =
-  {
-    executions: {
-      get: FunctionReference<
-        "query",
-        "internal",
-        { executionId: string },
-        null | {
-          _creationTime: number;
-          _id: string;
-          commandId?: string;
-          cwd?: string;
-          error?: string;
-          exitCode?: number;
-          finishedAt?: number;
-          input: string;
-          kind: "command" | "code";
-          onComplete?: string;
-          onCompleteContext?: any;
-          result?: string;
-          sandboxId: string;
-          sessionId?: string;
-          startedAt: number;
-          status: "running" | "completed" | "failed" | "cancelled";
-        },
-        Name
-      >;
-      list: FunctionReference<
-        "query",
-        "internal",
-        { limit?: number; sandboxId: string },
-        Array<{
-          _creationTime: number;
-          _id: string;
-          commandId?: string;
-          cwd?: string;
-          error?: string;
-          exitCode?: number;
-          finishedAt?: number;
-          input: string;
-          kind: "command" | "code";
-          onComplete?: string;
-          onCompleteContext?: any;
-          result?: string;
-          sandboxId: string;
-          sessionId?: string;
-          startedAt: number;
-          status: "running" | "completed" | "failed" | "cancelled";
-        }>,
-        Name
-      >;
-      purge: FunctionReference<
-        "mutation",
-        "internal",
-        { olderThanMs: number; sandboxId?: string },
-        { deleted: number; hasMore: boolean },
-        Name
-      >;
+export type ComponentApi<Name extends string | undefined = string | undefined> = {
+    "executions": {
+        "get": FunctionReference<"query", "internal", {
+            executionId: string;
+        }, null | {
+            _creationTime: number;
+            _id: string;
+            commandId?: string;
+            cwd?: string;
+            error?: string;
+            exitCode?: number;
+            finishedAt?: number;
+            input: string;
+            kind: "command" | "code";
+            onComplete?: string;
+            onCompleteContext?: any;
+            result?: string;
+            sandboxId: string;
+            sessionId?: string;
+            startedAt: number;
+            status: "running" | "completed" | "failed" | "cancelled";
+        }, Name>;
+        "list": FunctionReference<"query", "internal", {
+            limit?: number;
+            sandboxId: string;
+        }, Array<{
+            _creationTime: number;
+            _id: string;
+            commandId?: string;
+            cwd?: string;
+            error?: string;
+            exitCode?: number;
+            finishedAt?: number;
+            input: string;
+            kind: "command" | "code";
+            onComplete?: string;
+            onCompleteContext?: any;
+            result?: string;
+            sandboxId: string;
+            sessionId?: string;
+            startedAt: number;
+            status: "running" | "completed" | "failed" | "cancelled";
+        }>, Name>;
+        "purge": FunctionReference<"mutation", "internal", {
+            olderThanMs: number;
+            sandboxId?: string;
+        }, {
+            deleted: number;
+            hasMore: boolean;
+        }, Name>;
     };
-    files: {
-      deleteFile: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          path: string;
-          recursive?: boolean;
-          sandboxId: string;
-        },
-        null,
-        Name
-      >;
-      listFiles: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          path: string;
-          sandboxId: string;
-        },
-        Array<{
-          isDir: boolean;
-          modTime?: string;
-          name: string;
-          size?: number;
-        }>,
-        Name
-      >;
-      readFile: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          path: string;
-          sandboxId: string;
-        },
-        string,
-        Name
-      >;
-      readFileBytes: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          path: string;
-          sandboxId: string;
-        },
-        ArrayBuffer,
-        Name
-      >;
-      writeFile: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          content: string;
-          path: string;
-          sandboxId: string;
-        },
-        null,
-        Name
-      >;
-      writeFileBytes: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          content: ArrayBuffer;
-          path: string;
-          sandboxId: string;
-        },
-        null,
-        Name
-      >;
+    "files": {
+        "deleteFile": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            path: string;
+            recursive?: boolean;
+            sandboxId: string;
+        }, null, Name>;
+        "listFiles": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            path: string;
+            sandboxId: string;
+        }, Array<{
+            isDir: boolean;
+            modTime?: string;
+            name: string;
+            size?: number;
+        }>, Name>;
+        "readFile": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            path: string;
+            sandboxId: string;
+        }, string, Name>;
+        "readFileBytes": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            path: string;
+            sandboxId: string;
+        }, ArrayBuffer, Name>;
+        "writeFile": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            content: string;
+            path: string;
+            sandboxId: string;
+        }, null, Name>;
+        "writeFileBytes": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            content: ArrayBuffer;
+            path: string;
+            sandboxId: string;
+        }, null, Name>;
     };
-    process: {
-      cancelExecution: FunctionReference<
-        "action",
-        "internal",
-        { apiUrl?: string; executionId: string },
-        null,
-        Name
-      >;
-      run: FunctionReference<
-        "action",
-        "internal",
-        {
-          autoStart?: boolean;
-          command: string;
-          config: { apiKey: string; apiUrl?: string };
-          cwd?: string;
-          envs?: Record<string, string>;
-          sandboxId: string;
-          timeoutSeconds?: number;
-        },
-        { executionId: string; exitCode: number; result: string },
-        Name
-      >;
-      runBackground: FunctionReference<
-        "action",
-        "internal",
-        {
-          apiUrl?: string;
-          autoStart?: boolean;
-          command: string;
-          cwd?: string;
-          envs?: Record<string, string>;
-          maxPollMs?: number;
-          minPollMs?: number;
-          onComplete?: string;
-          onCompleteContext?: any;
-          sandboxId: string;
-        },
-        { executionId: string },
-        Name
-      >;
-      runCode: FunctionReference<
-        "action",
-        "internal",
-        {
-          argv?: Array<string>;
-          autoStart?: boolean;
-          code: string;
-          config: { apiKey: string; apiUrl?: string };
-          envs?: Record<string, string>;
-          language: string;
-          sandboxId: string;
-          timeoutSeconds?: number;
-        },
-        { executionId: string; exitCode: number; result: string },
-        Name
-      >;
+    "process": {
+        "cancelExecution": FunctionReference<"action", "internal", {
+            apiUrl?: string;
+            executionId: string;
+        }, null, Name>;
+        "run": FunctionReference<"action", "internal", {
+            autoStart?: boolean;
+            command: string;
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            cwd?: string;
+            envs?: Record<string, string>;
+            sandboxId: string;
+            timeoutSeconds?: number;
+        }, {
+            executionId: string;
+            exitCode: number;
+            result: string;
+        }, Name>;
+        "runBackground": FunctionReference<"action", "internal", {
+            apiUrl?: string;
+            autoStart?: boolean;
+            command: string;
+            cwd?: string;
+            envs?: Record<string, string>;
+            maxPollMs?: number;
+            minPollMs?: number;
+            onComplete?: string;
+            onCompleteContext?: any;
+            sandboxId: string;
+        }, {
+            executionId: string;
+        }, Name>;
+        "runCode": FunctionReference<"action", "internal", {
+            argv?: Array<string>;
+            autoStart?: boolean;
+            code: string;
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            envs?: Record<string, string>;
+            language: string;
+            sandboxId: string;
+            timeoutSeconds?: number;
+        }, {
+            executionId: string;
+            exitCode: number;
+            result: string;
+        }, Name>;
     };
-    sandboxes: {
-      create: FunctionReference<
-        "action",
-        "internal",
-        {
-          autoArchiveInterval?: number;
-          autoDeleteInterval?: number;
-          autoStopInterval?: number;
-          config: { apiKey: string; apiUrl?: string };
-          cpu?: number;
-          disk?: number;
-          envVars?: Record<string, string>;
-          image?: string;
-          labels?: Record<string, string>;
-          memory?: number;
-          name?: string;
-          public?: boolean;
-          snapshot?: string;
-          target?: string;
-          user?: string;
-          userKey?: string;
-          wait?: boolean;
-          waitTimeoutMs?: number;
-        },
-        { sandboxId: string; state: string },
-        Name
-      >;
-      get: FunctionReference<
-        "query",
-        "internal",
-        { sandboxId: string },
-        null | {
-          _creationTime: number;
-          _id: string;
-          createdAt: number;
-          labels?: Record<string, string>;
-          lastError?: string;
-          name?: string;
-          public?: boolean;
-          remoteUpdatedAt?: number;
-          sandboxId: string;
-          snapshot?: string;
-          state: string;
-          target?: string;
-          updatedAt: number;
-          userKey?: string;
-        },
-        Name
-      >;
-      list: FunctionReference<
-        "query",
-        "internal",
-        { limit?: number; state?: string; userKey?: string },
-        Array<{
-          _creationTime: number;
-          _id: string;
-          createdAt: number;
-          labels?: Record<string, string>;
-          lastError?: string;
-          name?: string;
-          public?: boolean;
-          remoteUpdatedAt?: number;
-          sandboxId: string;
-          snapshot?: string;
-          state: string;
-          target?: string;
-          updatedAt: number;
-          userKey?: string;
-        }>,
-        Name
-      >;
-      listPaginated: FunctionReference<
-        "query",
-        "internal",
-        {
-          paginationOpts: {
-            cursor: string | null;
-            endCursor?: string | null;
-            id?: number;
-            maximumBytesRead?: number;
-            maximumRowsRead?: number;
-            numItems: number;
-          };
-          state?: string;
-          userKey?: string;
-        },
-        any,
-        Name
-      >;
-      previewUrl: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          expiresInSeconds?: number;
-          port: number;
-          sandboxId: string;
-          signed?: boolean;
-        },
-        { port: number; token?: string; url: string },
-        Name
-      >;
-      purge: FunctionReference<
-        "mutation",
-        "internal",
-        { olderThanMs: number },
-        { deleted: number; hasMore: boolean },
-        Name
-      >;
-      refresh: FunctionReference<
-        "action",
-        "internal",
-        { config: { apiKey: string; apiUrl?: string }; sandboxId: string },
-        null | { sandboxId: string; state: string },
-        Name
-      >;
-      remove: FunctionReference<
-        "action",
-        "internal",
-        { config: { apiKey: string; apiUrl?: string }; sandboxId: string },
-        null,
-        Name
-      >;
-      start: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          sandboxId: string;
-          waitTimeoutMs?: number;
-        },
-        { sandboxId: string; state: string },
-        Name
-      >;
-      stop: FunctionReference<
-        "action",
-        "internal",
-        {
-          config: { apiKey: string; apiUrl?: string };
-          sandboxId: string;
-          waitTimeoutMs?: number;
-        },
-        { sandboxId: string; state: string },
-        Name
-      >;
+    "sandboxes": {
+        "create": FunctionReference<"action", "internal", {
+            autoArchiveInterval?: number;
+            autoDeleteInterval?: number;
+            autoStopInterval?: number;
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            cpu?: number;
+            disk?: number;
+            envVars?: Record<string, string>;
+            image?: string;
+            labels?: Record<string, string>;
+            memory?: number;
+            name?: string;
+            public?: boolean;
+            snapshot?: string;
+            target?: string;
+            user?: string;
+            userKey?: string;
+            wait?: boolean;
+            waitTimeoutMs?: number;
+        }, {
+            sandboxId: string;
+            state: string;
+        }, Name>;
+        "get": FunctionReference<"query", "internal", {
+            sandboxId: string;
+        }, null | {
+            _creationTime: number;
+            _id: string;
+            createdAt: number;
+            labels?: Record<string, string>;
+            lastError?: string;
+            name?: string;
+            public?: boolean;
+            remoteUpdatedAt?: number;
+            sandboxId: string;
+            snapshot?: string;
+            state: string;
+            target?: string;
+            updatedAt: number;
+            userKey?: string;
+        }, Name>;
+        "list": FunctionReference<"query", "internal", {
+            limit?: number;
+            state?: string;
+            userKey?: string;
+        }, Array<{
+            _creationTime: number;
+            _id: string;
+            createdAt: number;
+            labels?: Record<string, string>;
+            lastError?: string;
+            name?: string;
+            public?: boolean;
+            remoteUpdatedAt?: number;
+            sandboxId: string;
+            snapshot?: string;
+            state: string;
+            target?: string;
+            updatedAt: number;
+            userKey?: string;
+        }>, Name>;
+        "listPaginated": FunctionReference<"query", "internal", {
+            paginationOpts: {
+                cursor: string | null;
+                endCursor?: string | null;
+                id?: number;
+                maximumBytesRead?: number;
+                maximumRowsRead?: number;
+                numItems: number;
+            };
+            state?: string;
+            userKey?: string;
+        }, any, Name>;
+        "previewUrl": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            expiresInSeconds?: number;
+            port: number;
+            sandboxId: string;
+            signed?: boolean;
+        }, {
+            port: number;
+            token?: string;
+            url: string;
+        }, Name>;
+        "purge": FunctionReference<"mutation", "internal", {
+            olderThanMs: number;
+        }, {
+            deleted: number;
+            hasMore: boolean;
+        }, Name>;
+        "refresh": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            sandboxId: string;
+        }, null | {
+            sandboxId: string;
+            state: string;
+        }, Name>;
+        "remove": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            sandboxId: string;
+        }, null, Name>;
+        "start": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            sandboxId: string;
+            waitTimeoutMs?: number;
+        }, {
+            sandboxId: string;
+            state: string;
+        }, Name>;
+        "stop": FunctionReference<"action", "internal", {
+            config: {
+                apiKey: string;
+                apiUrl?: string;
+            };
+            sandboxId: string;
+            waitTimeoutMs?: number;
+        }, {
+            sandboxId: string;
+            state: string;
+        }, Name>;
     };
-  };
+};

@@ -8,7 +8,7 @@
  * internal bookkeeping mutations used by the process actions.
  */
 
-import { v } from "convex/values";
+import { v } from "bijection/values";
 import {
   internalMutation,
   internalQuery,

@@ -1,19 +1,15 @@
 {
-  "name": "@daytona/convex",
+  "name": "@bijectionhq/daytona",
   "version": "2.1.0",
-  "description": "Convex component for Daytona — create sandboxes, run commands and code, and manage sandbox files from your Convex backend, with sandbox and execution state tracked in reactive Convex tables",
+  "description": "Bijection component for Daytona \u2014 create sandboxes, run commands and code, and manage sandbox files from your Bijection backend, with sandbox and execution state tracked in reactive Bijection tables",
   "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/daytona/integrations.git",
-    "directory": "packages/convex"
-  },
+  "repository": "github:bijectionhq/daytona",
   "author": "Daytona Platforms Inc.",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/daytona/integrations/issues"
+    "url": "https://github.com/bijectionhq/daytona/issues"
   },
-  "homepage": "https://github.com/daytona/integrations/tree/main/packages/convex#readme",
+  "homepage": "https://github.com/bijectionhq/daytona",
   "keywords": [
     "convex",
     "component",
@@ -41,37 +37,36 @@
     "./_generated/component": {
       "types": "./dist/component/_generated/component.d.ts"
     },
-    "./convex.config.js": {
-      "types": "./dist/component/convex.config.d.ts",
-      "default": "./dist/component/convex.config.js"
+    "./bijection.config.js": {
+      "types": "./dist/component/bijection.config.d.ts",
+      "default": "./dist/component/bijection.config.js"
     },
-    "./convex.config": {
-      "types": "./dist/component/convex.config.d.ts",
-      "default": "./dist/component/convex.config.js"
+    "./bijection.config": {
+      "types": "./dist/component/bijection.config.d.ts",
+      "default": "./dist/component/bijection.config.js"
     }
   },
   "types": "./dist/client/index.d.ts",
   "module": "./dist/client/index.js",
   "scripts": {
-    "codegen": "convex codegen --component-dir ./src/component",
-    "build": "tsc --project tsconfig.build.json",
-    "clean": "rm -rf dist *.tsbuildinfo",
-    "typecheck": "tsc --noEmit",
-    "typecheck:example": "tsc -p example/convex",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:live": "node scripts/live.mjs",
-    "dev": "convex dev"
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
+    "test": "vitest run --maxWorkers=1 --no-file-parallelism"
   },
   "peerDependencies": {
-    "convex": "^1.43.0"
+    "bijection": "^0.1.5"
   },
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
     "@types/node": "^24.0.0",
-    "convex": "^1.45.0",
-    "convex-test": "^0.0.58",
     "typescript": "^5.9.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "bijection": "npm:@bijectionhq/bijection@^0.1.5",
+    "@bijectionhq/test": "^0.0.58"
+  },
+  "peerDependenciesMeta": {
+    "bijection": {
+      "optional": true
+    }
   }
 }

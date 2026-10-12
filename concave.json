@@ -1,0 +1,274 @@
+{
+  "format": 2,
+  "upstream": "4f10159a3ae5faa31792bb59abaa52aeecb5546c",
+  "roots": [
+    "packages/convex/",
+    "tools/concave/",
+    "scripts/",
+    "AGENTS.md",
+    "scripts/check_agent_mirror.py"
+  ],
+  "families": [
+    {
+      "id": "component",
+      "title": "@bijectionhq/daytona",
+      "paths": [
+        "packages/convex/"
+      ]
+    },
+    {
+      "id": "repository",
+      "title": "Preserved upstream and maintenance owners",
+      "paths": [
+        ".github/",
+        ".gitignore",
+        ".release-please-manifest.json",
+        "AGENTS.md",
+        "BIJECTION.md",
+        "CLA.md",
+        "CLAUDE.md",
+        "CODE_OF_CONDUCT.md",
+        "CONTRIBUTING.md",
+        "COPYRIGHT",
+        "Justfile",
+        "LICENSE",
+        "NOTICE",
+        "README.md",
+        "apps/",
+        "concave.json",
+        "packages/",
+        "release-please-config.json",
+        "scripts/",
+        "tools/",
+        "concave.exceptions/"
+      ]
+    }
+  ],
+  "preserve_exactly": [
+    "LICENSE",
+    "NOTICE",
+    "COPYRIGHT"
+  ],
+  "cases": {},
+  "boundaries": [
+    "concave.json",
+    "scripts/land.py",
+    "tools/concave-source.json"
+  ],
+  "writer": [
+    "python3",
+    "scripts/land.py",
+    "--edit",
+    "--"
+  ],
+  "transforms": [
+    {
+      "id": "sdk-module-identity",
+      "paths": [
+        "packages/convex/src/client/index.test.ts",
+        "packages/convex/src/client/index.ts",
+        "packages/convex/src/component/component.test.ts",
+        "packages/convex/src/component/convex.config.ts",
+        "packages/convex/src/component/executions.ts",
+        "packages/convex/src/component/files.ts",
+        "packages/convex/src/component/http.ts",
+        "packages/convex/src/component/process.ts",
+        "packages/convex/src/component/sandboxes.ts",
+        "packages/convex/src/component/schema.ts",
+        "packages/convex/src/component/setup.test.ts",
+        "packages/convex/src/component/types.ts",
+        "packages/convex/src/component/webhooks.test.ts",
+        "packages/convex/src/component/webhooks.ts",
+        "packages/convex/src/test.ts"
+      ],
+      "tokens": {
+        "rules": [
+          {
+            "from": "\"convex/",
+            "to": "\"bijection/"
+          },
+          {
+            "from": "'convex/",
+            "to": "'bijection/"
+          },
+          {
+            "from": "\"convex\"",
+            "to": "\"bijection\""
+          },
+          {
+            "from": "\"convex-helpers",
+            "to": "\"@bijectionhq/helpers"
+          },
+          {
+            "from": "\"convex-test\"",
+            "to": "\"@bijectionhq/test\""
+          },
+          {
+            "from": "\"@convex-dev/agent",
+            "to": "\"@bijectionhq/agents"
+          },
+          {
+            "from": "TestConvex",
+            "to": "TestBijection"
+          },
+          {
+            "from": "convexTest",
+            "to": "bijectionTest"
+          },
+          {
+            "from": "initConvexTest",
+            "to": "initBijectionTest"
+          },
+          {
+            "from": "CONVEX_CLOUD_URL",
+            "to": "BIJECTION_CLOUD_URL"
+          },
+          {
+            "from": "CONVEX_SITE_URL",
+            "to": "BIJECTION_SITE_URL"
+          }
+        ],
+        "except": [
+          "Symbol.for(\"ConvexError\")"
+        ]
+      },
+      "explanation": {
+        "why": "Resolve every component and React hook to the same Bijection SDK while preserving inherited marker, value and function contracts.",
+        "witnesses": [
+          "BIJECTION.md"
+        ]
+      }
+    },
+    {
+      "id": "package-assembly",
+      "paths": [
+        "packages/convex/package.json"
+      ],
+      "replacements": [
+        {
+          "from": "{\n  \"name\": \"@daytona/convex\",\n  \"version\": \"2.1.0\",\n  \"description\": \"Convex component for Daytona \u2014 create sandboxes, run commands and code, and manage sandbox files from your Convex backend, with sandbox and execution state tracked in reactive Convex tables\",\n  \"type\": \"module\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/daytona/integrations.git\",\n    \"directory\": \"packages/convex\"\n  },\n  \"author\": \"Daytona Platforms Inc.\",\n  \"license\": \"Apache-2.0\",\n  \"bugs\": {\n    \"url\": \"https://github.com/daytona/integrations/issues\"\n  },\n  \"homepage\": \"https://github.com/daytona/integrations/tree/main/packages/convex#readme\",\n  \"keywords\": [\n    \"convex\",\n    \"component\",\n    \"convex-component\",\n    \"daytona\",\n    \"sandbox\",\n    \"code-execution\",\n    \"ai-agents\"\n  ],\n  \"files\": [\n    \"dist\",\n    \"src\",\n    \"README.md\"\n  ],\n  \"exports\": {\n    \"./package.json\": \"./package.json\",\n    \".\": {\n      \"types\": \"./dist/client/index.d.ts\",\n      \"default\": \"./dist/client/index.js\"\n    },\n    \"./test\": \"./src/test.ts\",\n    \"./_generated/component.js\": {\n      \"types\": \"./dist/component/_generated/component.d.ts\"\n    },\n    \"./_generated/component\": {\n      \"types\": \"./dist/component/_generated/component.d.ts\"\n    },\n    \"./convex.config.js\": {\n      \"types\": \"./dist/component/convex.config.d.ts\",\n      \"default\": \"./dist/component/convex.config.js\"\n    },\n    \"./convex.config\": {\n      \"types\": \"./dist/component/convex.config.d.ts\",\n      \"default\": \"./dist/component/convex.config.js\"\n    }\n  },\n  \"types\": \"./dist/client/index.d.ts\",\n  \"module\": \"./dist/client/index.js\",\n  \"scripts\": {\n    \"codegen\": \"convex codegen --component-dir ./src/component\",\n    \"build\": \"tsc --project tsconfig.build.json\",\n    \"clean\": \"rm -rf dist *.tsbuildinfo\",\n    \"typecheck\": \"tsc --noEmit\",\n    \"typecheck:example\": \"tsc -p example/convex\",\n    \"test\": \"vitest run\",\n    \"test:watch\": \"vitest\",\n    \"test:live\": \"node scripts/live.mjs\",\n    \"dev\": \"convex dev\"\n  },\n  \"peerDependencies\": {\n    \"convex\": \"^1.43.0\"\n  },\n  \"devDependencies\": {\n    \"@edge-runtime/vm\": \"^5.0.0\",\n    \"@types/node\": \"^24.0.0\",\n    \"convex\": \"^1.45.0\",\n    \"convex-test\": \"^0.0.58\",\n    \"typescript\": \"^5.9.0\",\n    \"vitest\": \"^3.2.4\"\n  }\n}\n",
+          "to": "{\n  \"name\": \"@bijectionhq/daytona\",\n  \"version\": \"2.1.0\",\n  \"description\": \"Bijection component for Daytona \\u2014 create sandboxes, run commands and code, and manage sandbox files from your Bijection backend, with sandbox and execution state tracked in reactive Bijection tables\",\n  \"type\": \"module\",\n  \"repository\": \"github:bijectionhq/daytona\",\n  \"author\": \"Daytona Platforms Inc.\",\n  \"license\": \"Apache-2.0\",\n  \"bugs\": {\n    \"url\": \"https://github.com/bijectionhq/daytona/issues\"\n  },\n  \"homepage\": \"https://github.com/bijectionhq/daytona\",\n  \"keywords\": [\n    \"convex\",\n    \"component\",\n    \"convex-component\",\n    \"daytona\",\n    \"sandbox\",\n    \"code-execution\",\n    \"ai-agents\"\n  ],\n  \"files\": [\n    \"dist\",\n    \"src\",\n    \"README.md\"\n  ],\n  \"exports\": {\n    \"./package.json\": \"./package.json\",\n    \".\": {\n      \"types\": \"./dist/client/index.d.ts\",\n      \"default\": \"./dist/client/index.js\"\n    },\n    \"./test\": \"./src/test.ts\",\n    \"./_generated/component.js\": {\n      \"types\": \"./dist/component/_generated/component.d.ts\"\n    },\n    \"./_generated/component\": {\n      \"types\": \"./dist/component/_generated/component.d.ts\"\n    },\n    \"./bijection.config.js\": {\n      \"types\": \"./dist/component/bijection.config.d.ts\",\n      \"default\": \"./dist/component/bijection.config.js\"\n    },\n    \"./bijection.config\": {\n      \"types\": \"./dist/component/bijection.config.d.ts\",\n      \"default\": \"./dist/component/bijection.config.js\"\n    }\n  },\n  \"types\": \"./dist/client/index.d.ts\",\n  \"module\": \"./dist/client/index.js\",\n  \"scripts\": {\n    \"build\": \"tsc -p tsconfig.build.json\",\n    \"typecheck\": \"tsc --noEmit -p tsconfig.build.json\",\n    \"test\": \"vitest run --maxWorkers=1 --no-file-parallelism\"\n  },\n  \"peerDependencies\": {\n    \"bijection\": \"^0.1.5\"\n  },\n  \"devDependencies\": {\n    \"@edge-runtime/vm\": \"^5.0.0\",\n    \"@types/node\": \"^24.0.0\",\n    \"typescript\": \"^5.9.0\",\n    \"vitest\": \"^3.2.4\",\n    \"bijection\": \"npm:@bijectionhq/bijection@^0.1.5\",\n    \"@bijectionhq/test\": \"^0.0.58\"\n  },\n  \"peerDependenciesMeta\": {\n    \"bijection\": {\n      \"optional\": true\n    }\n  }\n}\n"
+        }
+      ],
+      "explanation": {
+        "why": "Install under the owned namespace, use one optional SDK peer, expose native runs with conversation primitives, and remove implicit publishing/deployment commands.",
+        "witnesses": [
+          "BIJECTION.md"
+        ]
+      }
+    },
+    {
+      "id": "concave-source-inventory",
+      "paths": [
+        ".gitignore"
+      ],
+      "replacements": [
+        {
+          "from": "# --- Python ---\n__pycache__/\n*.py[cod]\n*.egg-info/\n.eggs/\nbuild/\ndist/\n.venv/\nvenv/\n.env\n.pytest_cache/\n.ruff_cache/\n.mypy_cache/\n.coverage\nhtmlcov/\n\n# --- Node ---\nnode_modules/\n*.tsbuildinfo\n.npm/\nnpm-debug.log*\n\n# --- OS / editor ---\n.DS_Store\n*.log\n.idea/\n.vscode/\n",
+          "to": "# --- Python ---\n__pycache__/\n*.py[cod]\n*.egg-info/\n.eggs/\nbuild/\ndist/\n.venv/\nvenv/\n.env\n.pytest_cache/\n.ruff_cache/\n.mypy_cache/\n.coverage\nhtmlcov/\n\n# --- Node ---\nnode_modules/\n*.tsbuildinfo\n.npm/\nnpm-debug.log*\n\n# --- OS / editor ---\n.DS_Store\n*.log\n.idea/\n.vscode/\n\n# Source-preservation tooling is source, including its coverage package.\n!/tools/\n!/tools/**\n\n/target/\n/node_modules/\n/dist/\n"
+        }
+      ],
+      "explanation": {
+        "why": "Include the complete checker source without changing upstream artifact exclusions.",
+        "witnesses": [
+          "tools/concave-source.json"
+        ]
+      }
+    }
+  ],
+  "checks": {
+    "agent-mirror": {
+      "directory": ".",
+      "inputs": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "scripts/check_agent_mirror.py"
+      ],
+      "command": [
+        "python3",
+        "scripts/check_agent_mirror.py"
+      ],
+      "toolchain": [
+        {
+          "command": [
+            "python3",
+            "--version"
+          ]
+        }
+      ],
+      "timeout_seconds": 10,
+      "results": "command"
+    },
+    "component-generated": {
+      "directory": ".",
+      "inputs": [
+        "packages/convex/src/component/schema.ts",
+        "packages/convex/src/component/convex.config.ts",
+        "packages/convex/package.json",
+        "packages/convex/src/component/component.test.ts",
+        "packages/convex/src/component/executions.ts",
+        "packages/convex/src/component/files.ts",
+        "packages/convex/src/component/http.ts",
+        "packages/convex/src/component/process.ts",
+        "packages/convex/src/component/sandboxes.ts",
+        "packages/convex/src/component/setup.test.ts",
+        "packages/convex/src/component/types.ts",
+        "packages/convex/src/component/webhooks.test.ts",
+        "packages/convex/src/component/webhooks.ts",
+        "packages/convex/src/component/_generated/api.ts",
+        "packages/convex/src/component/_generated/component.ts",
+        "packages/convex/src/component/_generated/dataModel.ts",
+        "packages/convex/src/component/_generated/server.ts",
+        "scripts/check_component_generated.py"
+      ],
+      "command": [
+        "python3",
+        "scripts/check_component_generated.py"
+      ],
+      "toolchain": [
+        {
+          "command": [
+            "python3",
+            "--version"
+          ]
+        }
+      ],
+      "timeout_seconds": 600,
+      "results": "command"
+    }
+  },
+  "derived": [
+    {
+      "id": "native-component-bindings",
+      "paths": [
+        "packages/convex/src/component/_generated/api.ts",
+        "packages/convex/src/component/_generated/component.ts",
+        "packages/convex/src/component/_generated/dataModel.ts",
+        "packages/convex/src/component/_generated/server.ts"
+      ],
+      "sources": [
+        "packages/convex/src/component/schema.ts",
+        "packages/convex/src/component/convex.config.ts",
+        "packages/convex/package.json",
+        "packages/convex/src/component/component.test.ts",
+        "packages/convex/src/component/executions.ts",
+        "packages/convex/src/component/files.ts",
+        "packages/convex/src/component/http.ts",
+        "packages/convex/src/component/process.ts",
+        "packages/convex/src/component/sandboxes.ts",
+        "packages/convex/src/component/setup.test.ts",
+        "packages/convex/src/component/types.ts",
+        "packages/convex/src/component/webhooks.test.ts",
+        "packages/convex/src/component/webhooks.ts"
+      ],
+      "generator": "scripts/component_fork_codegen.py in the Bijection platform checkout",
+      "check": "component-generated",
+      "explanation": {
+        "why": "Render public component bindings from actual native schema and function analysis, including native table keys and environment names; handwritten edits cannot change analyzed contracts.",
+        "witnesses": [
+          "scripts/check_component_generated.py"
+        ]
+      }
+    }
+  ]
+}

@@ -9,7 +9,7 @@
  * `https://<deployment>.convex.site/daytona/webhook`).
  */
 
-import { httpRouter } from "convex/server";
+import { httpRouter } from "bijection/server";
 import { internal } from "./_generated/api.js";
 import { env, httpAction } from "./_generated/server.js";
 import { verifyWebhook } from "./webhooks.js";

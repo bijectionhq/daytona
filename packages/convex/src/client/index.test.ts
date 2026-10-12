@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { componentsGeneric } from "convex/server";
+import { componentsGeneric } from "bijection/server";
 import type { ComponentApi } from "../component/_generated/component.js";
 import { Daytona, type RunActionCtx } from "./index.js";
 

@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { api, internal } from "./_generated/api.js";
-import { initConvexTest } from "./setup.test.js";
+import { initBijectionTest } from "./setup.test.js";
 import { signPayload, verifyWebhook } from "./webhooks.js";
 
 const SECRET = `whsec_${btoa("test-webhook-secret-0123456789")}`;
@@ -60,7 +60,7 @@ describe("webhook route", () => {
     });
 
   async function deliver(
-    t: ReturnType<typeof initConvexTest>,
+    t: ReturnType<typeof initBijectionTest>,
     body: string,
     options: {
       secret?: string;
@@ -94,18 +94,18 @@ describe("webhook route", () => {
     });
   }
 
-  async function seed(t: ReturnType<typeof initConvexTest>, sandboxId: string) {
+  async function seed(t: ReturnType<typeof initBijectionTest>, sandboxId: string) {
     await t.mutation(internal.sandboxes.upsertSandbox, {
       sandboxId,
       state: "started",
     });
   }
 
-  const stateOf = async (t: ReturnType<typeof initConvexTest>, id: string) =>
+  const stateOf = async (t: ReturnType<typeof initBijectionTest>, id: string) =>
     (await t.query(api.sandboxes.get, { sandboxId: id }))?.state;
 
   test("a signed state event updates a tracked sandbox", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await seed(t, "sbx-1");
     const response = await deliver(
       t,
@@ -117,7 +117,7 @@ describe("webhook route", () => {
   });
 
   test("Standard Webhooks headers (webhook-*) are accepted too", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await seed(t, "sbx-1");
     const response = await deliver(
       t,
@@ -129,7 +129,7 @@ describe("webhook route", () => {
   });
 
   test("any valid entry in a multi-signature header is accepted (rotation)", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await seed(t, "sbx-1");
     const response = await deliver(
       t,
@@ -140,7 +140,7 @@ describe("webhook route", () => {
   });
 
   test("tampered body, wrong secret and stale timestamp are rejected", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await seed(t, "sbx-1");
     const body = stateEvent("sbx-1", "stopped", iso(60));
 
@@ -166,7 +166,7 @@ describe("webhook route", () => {
   });
 
   test("refuses everything when no secret is configured", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await seed(t, "sbx-1");
     vi.stubEnv("DAYTONA_WEBHOOK_SECRET", undefined);
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -183,7 +183,7 @@ describe("webhook route", () => {
   });
 
   test("untracked sandboxes and other event types are acknowledged, not applied", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     const unknown = await deliver(
       t,
       stateEvent("sbx-someone-elses", "stopped", iso(60)),
@@ -201,7 +201,7 @@ describe("webhook route", () => {
   });
 
   test("out-of-order and duplicate deliveries converge on the newest state", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await seed(t, "sbx-1");
     const newer = stateEvent("sbx-1", "stopped", iso(120));
     const older = stateEvent("sbx-1", "started", iso(60));
@@ -217,7 +217,7 @@ describe("webhook route", () => {
   });
 
   test("signed but malformed payloads get 400, not a crash", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     await seed(t, "sbx-1");
     for (const body of [
       "null",
@@ -234,7 +234,7 @@ describe("webhook route", () => {
   });
 
   test("a late event older than an API-observed state is discarded", async () => {
-    const t = initConvexTest();
+    const t = initBijectionTest();
     // Event happened 30s ago, but the component observed the sandbox via the
     // API just now (e.g. a start action), which is newer.
     await seed(t, "sbx-1");

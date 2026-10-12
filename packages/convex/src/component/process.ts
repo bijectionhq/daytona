@@ -14,8 +14,8 @@
  * `nohup … &`) and poll it with follow-up executions.
  */
 
-import type { FunctionHandle } from "convex/server";
-import { v } from "convex/values";
+import type { FunctionHandle } from "bijection/server";
+import { v } from "bijection/values";
 import { internal } from "./_generated/api.js";
 import type { Id } from "./_generated/dataModel.js";
 import {

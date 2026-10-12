@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { defineSchema, defineTable } from "bijection/server";
+import { v } from "bijection/values";
 
 /**
  * Sandbox records mirror the Daytona sandboxes this component has created or

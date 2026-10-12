@@ -12,7 +12,7 @@
  * limits (16 MiB); move bigger payloads via URLs inside the sandbox instead.
  */
 
-import { v } from "convex/values";
+import { v } from "bijection/values";
 import { action } from "./_generated/server.js";
 import { DaytonaClient } from "./daytona.js";
 import { configValidator } from "./types.js";
