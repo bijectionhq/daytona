@@ -18,6 +18,15 @@
       "end": 37,
       "replacement_sha256": "882dea71fa1b9624871114a884c39d2ff21525a2185a6f039b7f2a8f8fa55c64",
       "fence": true
+    },
+    {
+      "id": "sandbox-ttl-option",
+      "path": "packages/convex/src/client/index.ts",
+      "upstream_sha256": "f68ffdcf6259950b5fb0e509c19c031e2203b0998026e538805f1c8d0284d523",
+      "start": 43,
+      "end": 43,
+      "replacement_sha256": "e968dfff001a480dd816944cf63e343b0ac8089fa67c6b49313dbef4d4a7089a",
+      "fence": true
     }
   ]
 }

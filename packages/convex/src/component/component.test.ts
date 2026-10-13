@@ -157,10 +157,10 @@ describe("sandbox lifecycle actions", () => {
   });
 
   // concave:begin sandbox-egress-witness
-  // why: Exercise explicit true, false and omitted provider firewall settings through the component action.
+  // why: Exercise exact omitted, disabled and requested provider creation settings, including firewall policy and wall-clock lifetime, with invalid TTL refused before allocation.
   // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
   // witness: scripts/check_daytona_custody.py
-  // remove-when: Upstream qualifies networkBlockAll creation semantics.
+  // remove-when: Upstream qualifies firewall and wall-clock lifetime creation semantics.
   test("create forwards explicit outbound blocking and preserves omitted defaults", async () => {
     for (const value of [undefined, false, true]) {
       const t = initBijectionTest();
@@ -186,6 +186,27 @@ describe("sandbox lifecycle actions", () => {
     }
   });
 
+
+  test("create forwards creation TTL without inventing a later deadline", async () => {
+    for (const ttlMinutes of [undefined, 0, 2]) {
+      const t = initBijectionTest();
+      const { calls } = stubFetch([{ method: "POST", match: "/api/sandbox", response: () => json(startedSandbox) }]);
+      await t.action(api.sandboxes.create, { config, wait: false, ...(ttlMinutes === undefined ? {} : { ttlMinutes }) });
+      expect(calls).toHaveLength(1);
+      const body = JSON.parse(calls[0]?.body ?? "{}");
+      if (ttlMinutes === undefined) expect(body).not.toHaveProperty("ttlMinutes");
+      else expect(body.ttlMinutes).toBe(ttlMinutes);
+    }
+  });
+
+  test("invalid creation TTL allocates no provider resource", async () => {
+    for (const ttlMinutes of [-1, 0.5, Number.MAX_SAFE_INTEGER + 1]) {
+      const t = initBijectionTest();
+      const { calls } = stubFetch([]);
+      await expect(t.action(api.sandboxes.create, { config, ttlMinutes })).rejects.toThrow("ttlMinutes");
+      expect(calls).toHaveLength(0);
+    }
+  });
   // concave:end sandbox-egress-witness
 
   test("create rejects resources without image, and snapshot+image together", async () => {

@@ -49,6 +49,14 @@ export interface CreateSandboxArgs {
   autoStopInterval?: number;
   autoArchiveInterval?: number;
   autoDeleteInterval?: number;
+  // concave:begin sandbox-ttl-option
+  // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
+  // why: Forward an explicit provider TTL at creation, preserving omitted defaults and avoiding a retrying relative-deadline setter.
+  // witness: packages/convex/src/component/component.test.ts
+  // remove-when: Upstream exposes and qualifies the provider wall-clock TTL contract.
+  /** Provider wall-clock lifetime in whole minutes; 0 disables it. */
+  ttlMinutes?: number;
+  // concave:end sandbox-ttl-option
   userKey?: string;
   wait?: boolean;
   waitTimeoutMs?: number;

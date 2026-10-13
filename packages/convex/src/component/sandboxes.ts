@@ -231,6 +231,13 @@ export const create = action({
     autoArchiveInterval: v.optional(v.number()),
     /** Minutes before auto-delete; -1 disables. */
     autoDeleteInterval: v.optional(v.number()),
+    // concave:begin sandbox-ttl-validator
+    // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
+    // why: Declare the provider wall-clock TTL as an optional numeric creation argument.
+    // witness: packages/convex/src/component/component.test.ts
+    // remove-when: Upstream exposes and qualifies the provider wall-clock TTL contract.
+    ttlMinutes: v.optional(v.number()),
+    // concave:end sandbox-ttl-validator
     /** Opaque owner/tenant key from the host app (see schema). */
     userKey: v.optional(v.string()),
     /** Wait until the sandbox is started (default true). */
@@ -239,6 +246,15 @@ export const create = action({
   },
   returns: sandboxSummary,
   handler: async (ctx, args) => {
+    // concave:begin sandbox-ttl-input
+    // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
+    // why: Reject invalid provider TTL values before allocation; zero deliberately disables this low-level option.
+    // witness: packages/convex/src/component/component.test.ts
+    // remove-when: Upstream exposes and qualifies the provider wall-clock TTL contract.
+    if (args.ttlMinutes !== undefined && (!Number.isSafeInteger(args.ttlMinutes) || args.ttlMinutes < 0)) {
+      throw new Error("ttlMinutes must be a non-negative safe integer");
+    }
+    // concave:end sandbox-ttl-input
     if (args.snapshot && args.image) {
       throw new Error(
         "Pass either `snapshot` or `image`, not both — a snapshot already defines its base image.",
@@ -279,6 +295,13 @@ export const create = action({
       autoStopInterval: args.autoStopInterval,
       autoArchiveInterval: args.autoArchiveInterval,
       autoDeleteInterval: args.autoDeleteInterval,
+      // concave:begin sandbox-ttl-forwarding
+      // preserves: packages/convex/src/component/bijection.config.ts#component-analysis
+      // why: Send the exact requested lifetime with allocation instead of resetting a deadline after creation.
+      // witness: packages/convex/src/component/component.test.ts
+      // remove-when: Upstream exposes and qualifies the provider wall-clock TTL contract.
+      ttlMinutes: args.ttlMinutes,
+      // concave:end sandbox-ttl-forwarding
     });
     await ctx.runMutation(internal.sandboxes.upsertSandbox, {
       sandboxId: created.id,

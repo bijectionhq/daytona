@@ -18,6 +18,33 @@
       "end": 217,
       "replacement_sha256": "f7e974a0ebc69a21bc12f99a7c976e2768a5d7bfe03146a2649ca7e6034aaa4e",
       "fence": true
+    },
+    {
+      "id": "sandbox-ttl-forwarding",
+      "path": "packages/convex/src/component/sandboxes.ts",
+      "upstream_sha256": "cd10582f79be8fb24d544dbb144b453da22b7ee62cf19e124c6c1cba97cb6d97",
+      "start": 267,
+      "end": 267,
+      "replacement_sha256": "0d2d3581fa1ed36550ee0e5c2d15632dc99b754651ceb1798a3b9daf0919fec2",
+      "fence": true
+    },
+    {
+      "id": "sandbox-ttl-input",
+      "path": "packages/convex/src/component/sandboxes.ts",
+      "upstream_sha256": "cd10582f79be8fb24d544dbb144b453da22b7ee62cf19e124c6c1cba97cb6d97",
+      "start": 234,
+      "end": 234,
+      "replacement_sha256": "a4f80fbd091e7a497fa908fc196bed8039d2a501f12e2cec62acffda1fea8c53",
+      "fence": true
+    },
+    {
+      "id": "sandbox-ttl-validator",
+      "path": "packages/convex/src/component/sandboxes.ts",
+      "upstream_sha256": "cd10582f79be8fb24d544dbb144b453da22b7ee62cf19e124c6c1cba97cb6d97",
+      "start": 226,
+      "end": 226,
+      "replacement_sha256": "f454e838548e66d7ebb4f588b9284f34c5e2f4031bf2f35760f2c068106b5429",
+      "fence": true
     }
   ]
 }

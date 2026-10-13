@@ -211,6 +211,7 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
             public?: boolean;
             snapshot?: string;
             target?: string;
+            ttlMinutes?: number;
             user?: string;
             userKey?: string;
             wait?: boolean;

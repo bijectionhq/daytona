@@ -60,3 +60,17 @@ for the fork's source-bound TypeScript and single-worker component checks.
 The check uses the platform's pinned Node and installed SDK graph; it is a
 mocked-provider/component witness, not PostgreSQL crash recovery or live Daytona
 qualification. Native agents keep the platform's durable run and authority owner.
+
+## Creation lifetime
+
+`ttlMinutes` forwards the provider wall-clock lifetime at creation. Omission
+preserves provider defaults; zero disables TTL. Invalid integers are refused
+before allocation. This option does not establish a native lease or verified
+cleanup. A native binding must inspect the provider's actual `autoDestroyAt`
+and preserve the original deadline on recovery. The provider's relative
+`setTtl` re-anchors its deadline and is not a safe retry substitute.
+
+The reviewed client source is `daytona/clients` at
+`151cb7103a1cf7fd21fddcddc50ad4eade3a9e26` (`sdk-typescript/src/Daytona.ts`
+and `Sandbox.ts`); see the [provider TTL contract](
+https://www.daytona.io/docs/en/typescript-sdk/sandbox/#setttl).
